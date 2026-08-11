@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d3b2a">
+<title>SuperCombinazioni</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#07150f; --card:#10251c; --card2:#163326; --accent:#49d17d;
+  --accent2:#d4ff72; --text:#f3fff7; --muted:#a6c3b1; --danger:#ff7b7b;
+  --line:#284737;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#07150f,#0d2118 45%,#07150f);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:24px 18px 18px;max-width:920px;margin:auto}
+.logo{display:flex;align-items:center;gap:12px}
+.mark{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#0a2418;font-size:26px;font-weight:900}
+h1{margin:0;font-size:1.45rem}.tag{color:var(--muted);margin-top:5px;font-size:.92rem}
+main{max-width:920px;margin:auto;padding:0 14px 90px}
+.hero{background:linear-gradient(135deg,#173b2b,#10251c);border:1px solid #2f6148;border-radius:24px;padding:18px;margin-bottom:14px}
+.hero .big{font-size:2rem;font-weight:900;letter-spacing:-1px}
+.hero small{color:var(--muted)}
+nav{position:sticky;top:0;z-index:5;background:rgba(7,21,15,.92);backdrop-filter:blur(10px);padding:8px 0 12px;display:flex;gap:8px;overflow:auto}
+.tab{white-space:nowrap;border:1px solid var(--line);background:#10251c;color:var(--muted);border-radius:999px;padding:10px 14px;font-weight:700}
+.tab.active{background:var(--accent);color:#082016;border-color:transparent}
+.panel{display:none}.panel.active{display:block}
+.card{background:linear-gradient(180deg,var(--card),#0d2118);border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 14px 34px rgba(0,0,0,.18)}
+.card h2{font-size:1.06rem;margin:0 0 12px}
+.muted{color:var(--muted);font-size:.9rem}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+input,button,select{font:inherit}
+input,select{background:#091a12;color:var(--text);border:1px solid #315342;border-radius:12px;padding:11px}
+input::placeholder{color:#769283}
+.num{width:58px;text-align:center;font-weight:800}
+button{border:0;border-radius:12px;padding:11px 14px;font-weight:800;background:linear-gradient(135deg,var(--accent),#77e9a2);color:#082016}
+button.secondary{background:#1a382a;color:#dff6e7;border:1px solid #315342}
+button.danger{background:#452525;color:#ffdede}
+.balls{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.ball{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#f6fff8;color:#0d3b2a;font-weight:900;box-shadow:inset 0 -4px 0 rgba(0,0,0,.08)}
+.result{margin-top:12px;padding:13px;border-radius:14px;background:#0b1c14;border:1px solid #274738}
+.good{border-color:#3b805a;background:#102a1d}.bad{border-color:#743b3b;background:#2a1414;color:#ffd5d5}
+.statgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{background:#0b1c14;border:1px solid #294838;padding:12px;border-radius:14px}
+.stat b{display:block;font-size:1.25rem;margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:.86rem}th,td{text-align:left;padding:9px;border-bottom:1px solid #244233;white-space:nowrap}
+.badge{display:inline-block;padding:5px 8px;border-radius:999px;background:#1e4532;color:#bff6d1;font-size:.78rem;font-weight:800}
+#network{display:grid;gap:8px}.linkitem{padding:11px;border:1px solid #294838;border-radius:13px;background:#0b1c14}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+.note{font-size:.82rem;color:#8ea99a}
+@media(min-width:700px){.statgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><div class="mark">6</div><div><h1>SuperCombinazioni</h1><div class="tag">Archivio, verifica e relazioni tra sestine</div></div></div>
+</header>
+<main>
+  <section class="hero">
+    <small>Spazio combinatorio</small>
+    <div class="big">622.614.630</div>
+    <div class="muted">Tutte le possibili sestine di 6 numeri su 90.</div>
+  </section>
+
+  <nav>
+    <button class="tab active" data-tab="check">È mai uscita?</button>
+    <button class="tab" data-tab="analysis">Analisi estrazioni</button>
+    <button class="tab" data-tab="relations">Legami</button>
+    <button class="tab" data-tab="archive">Archivio</button>
+    <button class="tab" data-tab="index">Indice</button>
+  </nav>
+
+  <section id="check" class="panel active">
+    <div class="card">
+      <h2>Controlla una sestina</h2>
+      <div class="row" id="checkInputs">
+        <input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric">
+        <input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric">
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="checkBtn">È MAI USCITA?</button>
+        <button id="clearCheckBtn" class="secondary">Pulisci</button>
+      </div>
+      <div id="checkResult" class="result muted">Inserisci 6 numeri distinti tra 1 e 90.</div>
+    </div>
+
+    <div class="card">
+      <h2>Duplicati nello storico</h2>
+      <div id="dupResult" class="muted">Analizzo le sestine presenti nell'archivio locale.</div>
+    </div>
+
+    <div class="card">
+      <h2>Come avrebbe performato la tua sestina</h2>
+      <div class="muted">Confronto i tuoi 6 numeri con tutte le estrazioni caricate e conto quante volte avresti centrato 2, 3, 4, 5 o 6 numeri. Se lo storico contiene anche il Jolly, calcolo pure il 5+1.</div>
+      <div class="row" id="prizeInputs" style="margin-top:12px">
+        <input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric">
+        <input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric">
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="prizeBtn">Valuta storico</button>
+        <button id="clearPrizeBtn" class="secondary">Pulisci</button>
+      </div>
+      <div id="prizeResult" class="result muted">Inserisci una sestina per vedere quante vincite teoriche avrebbe ottenuto nello storico caricato.</div>
+    </div>
+  </section>
+
+  
+  <section id="analysis" class="panel">
+    <div class="card">
+      <h2>Profilo di ogni estrazione</h2>
+      <div class="muted">Per ogni sestina calcolo pari/dispari, distanze tra numeri consecutivi, distanza media, scarto minimo e massimo e ampiezza totale.</div>
+      <div class="statgrid" style="margin-top:12px">
+        <div class="stat">Estrazioni analizzate<b id="anaCount">0</b></div>
+        <div class="stat">Distanza media storica<b id="anaAvgGap">0</b></div>
+        <div class="stat">Ampiezza media<b id="anaAvgSpan">0</b></div>
+        <div class="stat">Profilo pari/dispari più comune<b id="anaParityMode">-</b></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Distribuzione pari / dispari</h2>
+      <div id="parityDistribution"></div>
+    </div>
+
+    <div class="card">
+      <h2>Dettaglio estrazioni</h2>
+      <div class="row">
+        <input id="analysisSearch" placeholder="Cerca data o concorso..." style="flex:1">
+        <button id="clearAnalysisSearch" class="secondary">Pulisci</button>
+      </div>
+      <div style="overflow:auto;margin-top:10px">
+        <table>
+          <thead><tr><th>Data</th><th>Conc.</th><th>Sestina</th><th>Pari/Disp.</th><th>Distanze</th><th>Media</th><th>Min</th><th>Max</th><th>Ampiezza</th></tr></thead>
+          <tbody id="analysisBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Analizza una sestina</h2>
+      <div class="row" id="singleAnalysisInputs">
+        <input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric">
+        <input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric">
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="singleAnalysisBtn">Analizza</button>
+        <button id="clearSingleAnalysisBtn" class="secondary">Pulisci</button>
+      </div>
+      <div id="singleAnalysisResult" class="result muted">Inserisci 6 numeri per vedere il profilo della sestina.</div>
+    </div>
+  </section>
+
+<section id="relations" class="panel">
+    <div class="card">
+      <h2>Legami tra estrazioni vincenti</h2>
+      <div class="muted">Confronta ogni estrazione con la precedente e misura quanto si assomigliano.</div>
+      <div class="statgrid" style="margin-top:12px">
+        <div class="stat">Coppie analizzate<b id="pairs">0</b></div>
+        <div class="stat">Con ≥1 numero comune<b id="shared1">0</b></div>
+        <div class="stat">Con ≥2 comuni<b id="shared2">0</b></div>
+        <div class="stat">Distanza media indice<b id="avgRankGap">0</b></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Relazioni più forti</h2>
+      <div id="network"></div>
+    </div>
+
+    <div class="card">
+      <h2>Analisi di una sestina rispetto allo storico</h2>
+      <div class="row" id="relInputs">
+        <input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric">
+        <input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric">
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="relBtn">Trova le più simili</button>
+        <button id="clearRelBtn" class="secondary">Pulisci</button>
+      </div>
+      <div id="relResult" class="result muted">Ti mostrerò le estrazioni storiche con più numeri in comune e caratteristiche simili.</div>
+    </div>
+  </section>
+
+  <section id="archive" class="panel">
+    <div class="card">
+      <h2>Archivio locale</h2>
+      <div class="row">
+        <input id="searchArchive" placeholder="Cerca data, concorso o numero..." style="flex:1">
+        <button id="exportBtn" class="secondary">Esporta CSV</button>
+      </div>
+      <div style="overflow:auto;margin-top:10px"><table>
+        <thead><tr><th>Data</th><th>Concorso</th><th>Sestina</th><th>Pari/Disp.</th><th>Dist. media</th><th>Indice</th></tr></thead>
+        <tbody id="archiveBody"></tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <h2>Importa storico completo</h2>
+      <div class="muted">Puoi importare un CSV con colonne: data, concorso, n1, n2, n3, n4, n5, n6 e, facoltativamente, jolly. L'app calcola da sola l'indice.</div>
+      <input id="csvFile" type="file" accept=".csv,text/csv" style="margin-top:10px;width:100%">
+      <div class="row" style="margin-top:10px">
+        <button id="importBtn">Importa CSV</button>
+        <button id="resetBtn" class="danger">Ripristina demo</button>
+      </div>
+      <div id="importInfo" class="note" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <section id="index" class="panel">
+    <div class="card">
+      <h2>Sestina → numero combinazione</h2>
+      <div class="row" id="rankInputs">
+        <input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric">
+        <input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric">
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="rankBtn">Calcola indice</button>
+        <button id="clearRankBtn" class="secondary">Pulisci</button>
+      </div>
+      <div id="rankResult" class="result muted"></div>
+    </div>
+
+    <div class="card">
+      <h2>Numero combinazione → sestina</h2>
+      <div class="row"><input id="unrankInput" inputmode="numeric" placeholder="1 - 622614630" style="flex:1"><button id="unrankBtn">Trova</button><button id="clearUnrankBtn" class="secondary">Pulisci</button></div>
+      <div id="unrankResult" class="result muted"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const TOTAL=622614630;
+const demo=[
+{date:"2026-07-16",contest:"113",combo:[1,15,21,46,52,67]},
+{date:"2026-07-17",contest:"114",combo:[7,34,45,64,65,76]},
+{date:"2026-07-18",contest:"115",combo:[1,28,52,62,79,86]},
+{date:"2026-07-21",contest:"116",combo:[13,14,15,29,38,63]},
+{date:"2026-07-23",contest:"117",combo:[2,12,22,34,70,74]},
+{date:"2026-07-24",contest:"118",combo:[20,40,53,61,74,79]},
+{date:"2026-07-25",contest:"119",combo:[18,19,33,34,61,85]},
+{date:"2026-07-28",contest:"120",combo:[1,6,9,43,54,62]},
+{date:"2026-07-30",contest:"121",combo:[20,47,75,76,78,89]},
+{date:"2026-08-08",contest:"127",combo:[9,12,55,61,82,85]}
+];
+
+function C(n,k){if(k<0||n<k)return 0;if(k===0||k===n)return 1;k=Math.min(k,n-k);let r=1;for(let i=1;i<=k;i++)r=r*(n-k+i)/i;return Math.round(r)}
+function valid(a){let b=a.map(Number).sort((x,y)=>x-y);if(b.length!==6||b.some(x=>!Number.isInteger(x)||x<1||x>90)||new Set(b).size!==6)return null;return b}
+function rankCombo(a){a=valid(a);if(!a)return null;let r=1,p=0;for(let i=0;i<6;i++){let x=a[i],rem=6-i;for(let v=p+1;v<x;v++)r+=C(90-v,rem-1);p=x}return r}
+function unrankCombo(rank){rank=Number(rank);if(!Number.isInteger(rank)||rank<1||rank>TOTAL)return null;let out=[],p=0,r=rank;for(let i=0;i<6;i++){let rem=6-i;for(let v=p+1;v<=90;v++){let cnt=C(90-v,rem-1);if(r>cnt)r-=cnt;else{out.push(v);p=v;break}}}return out}
+function key(a){return [...a].sort((x,y)=>x-y).join("-")}
+function balls(a){return `<div class="balls">${a.map(n=>`<span class="ball">${n}</span>`).join("")}</div>`}
+function shared(a,b){return a.filter(x=>b.includes(x)).length}
+function sum(a){return a.reduce((s,x)=>s+x,0)}
+function parity(a){return a.filter(x=>x%2===0).length}
+function gapStats(a){
+  const s=[...a].sort((x,y)=>x-y);
+  const gaps=[]; for(let i=1;i<s.length;i++) gaps.push(s[i]-s[i-1]);
+  const avg=gaps.reduce((x,y)=>x+y,0)/gaps.length;
+  return {gaps,avg,min:Math.min(...gaps),max:Math.max(...gaps),span:s[s.length-1]-s[0]};
+}
+function profileHTML(a){
+  const e=parity(a), d=6-e, g=gapStats(a);
+  return `<div class="statgrid">
+    <div class="stat">Pari<b>${e}</b></div>
+    <div class="stat">Dispari<b>${d}</b></div>
+    <div class="stat">Distanza media<b>${g.avg.toFixed(1)}</b></div>
+    <div class="stat">Ampiezza<b>${g.span}</b></div>
+  </div>
+  <div class="note" style="margin-top:10px">Distanze consecutive: ${g.gaps.join(" · ")} — minimo ${g.min}, massimo ${g.max}</div>`;
+}
+function decades(a){let d=new Set(a.map(x=>Math.floor((x-1)/10)));return d.size}
+function normHistory(h){return h.map(x=>({...x,combo:valid(x.combo),rank:x.rank||rankCombo(x.combo),jolly:(x.jolly?Number(x.jolly):null)})).filter(x=>x.combo)}
+function getH(){let raw=localStorage.getItem("sc_hist_v2");return raw?normHistory(JSON.parse(raw)):normHistory(demo)}
+function setH(h){localStorage.setItem("sc_hist_v2",JSON.stringify(normHistory(h)));renderAll()}
+
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab,.panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.tab).classList.add("active")});
+
+function vals(id){return [...document.querySelectorAll(`#${id} input`)].map(x=>x.value)}
+function clearInputs(id){document.querySelectorAll(`#${id} input`).forEach(x=>x.value="")}
+document.getElementById("checkBtn").onclick=()=>{
+ let a=valid(vals("checkInputs")),el=document.getElementById("checkResult"); if(!a){el.className="result bad";el.textContent="Sestina non valida.";return}
+ let m=getH().filter(x=>key(x.combo)===key(a));
+ if(!m.length){el.className="result good";el.innerHTML=`${balls(a)}<b>Mai uscita come sestina vincente</b><br><span class="muted">Nell'archivio attualmente caricato nell'app.</span>`}
+ else{el.className="result good";el.innerHTML=`${balls(a)}<b>Uscita ${m.length} volta/e</b><br>${m.map(x=>`${x.date} — concorso ${x.contest}`).join("<br>")}`}
+};
+document.getElementById("clearCheckBtn").onclick=()=>{
+ clearInputs("checkInputs");
+ const el=document.getElementById("checkResult"); el.className="result muted"; el.textContent="Inserisci 6 numeri distinti tra 1 e 90.";
+};
+
+document.getElementById("prizeBtn").onclick=()=>{
+ let a=valid(vals("prizeInputs")),el=document.getElementById("prizeResult");
+ if(!a){el.className="result bad";el.textContent="Sestina non valida.";return}
+ let h=getH(), counts={2:0,3:0,4:0,5:0,6:0,"5+1":0}, examples={2:[],3:[],4:[],5:[],6:[],"5+1":[]};
+ for(const x of h){
+   const c=shared(a,x.combo);
+   if(c>=2 && c<=6){counts[c]++; if(examples[c].length<3) examples[c].push(x)}
+   if(c===5 && x.jolly && a.includes(Number(x.jolly)) && !x.combo.includes(Number(x.jolly))){
+      counts["5+1"]++; if(examples["5+1"].length<3) examples["5+1"].push(x)
+   }
+ }
+ const blocks=["6","5+1","5","4","3","2"].map(k=>{
+   const ex=examples[k].map(x=>`${x.date} (conc. ${x.contest})`).join(", ");
+   return `<div class="stat">${k} numeri<b>${counts[k]||0}</b>${ex?`<span class="note">${ex}</span>`:""}</div>`;
+ }).join("");
+ el.className="result good";
+ el.innerHTML=`${balls(a)}<div class="statgrid">${blocks}</div><div class="note" style="margin-top:10px">Conteggio teorico sulle estrazioni presenti nell'archivio dell'app. Il 5+1 viene calcolato solo dove il Jolly è disponibile.</div>`;
+};
+document.getElementById("clearPrizeBtn").onclick=()=>{
+ clearInputs("prizeInputs");
+ const el=document.getElementById("prizeResult"); el.className="result muted"; el.textContent="Inserisci una sestina per vedere quante vincite teoriche avrebbe ottenuto nello storico caricato.";
+};
+
+
+function renderDup(){
+ let h=getH(),map={};h.forEach(x=>(map[key(x.combo)]??=[]).push(x));
+ let d=Object.values(map).filter(v=>v.length>1), el=document.getElementById("dupResult");
+ el.innerHTML=d.length?d.map(v=>`<div class="linkitem"><b>${v[0].combo.join(" - ")}</b><br>${v.length} volte: ${v.map(x=>x.date).join(", ")}</div>`).join(""):`<span class="badge">Nessun duplicato</span> tra le ${h.length} estrazioni caricate.`;
+}
+function renderArchive(){
+ let q=document.getElementById("searchArchive").value.toLowerCase().trim(),h=getH().sort((a,b)=>b.date.localeCompare(a.date));
+ if(q)h=h.filter(x=>x.date.includes(q)||String(x.contest).includes(q)||x.combo.some(n=>String(n)===q));
+ document.getElementById("archiveBody").innerHTML=h.map(x=>{let e=parity(x.combo),g=gapStats(x.combo);return `<tr><td>${x.date}</td><td>${x.contest}</td><td>${x.combo.join(" ")}</td><td>${e}/${6-e}</td><td>${g.avg.toFixed(1)}</td><td>${x.rank.toLocaleString("it-IT")}</td></tr>`}).join("");
+}
+document.getElementById("searchArchive").oninput=renderArchive;
+
+
+function renderAnalysis(){
+ let h=getH().sort((a,b)=>b.date.localeCompare(a.date));
+ document.getElementById("anaCount").textContent=h.length.toLocaleString("it-IT");
+ if(!h.length){
+   document.getElementById("anaAvgGap").textContent="0";
+   document.getElementById("anaAvgSpan").textContent="0";
+   document.getElementById("anaParityMode").textContent="-";
+   document.getElementById("analysisBody").innerHTML="";
+   document.getElementById("parityDistribution").innerHTML="";
+   return;
+ }
+ const stats=h.map(x=>({x,g:gapStats(x.combo),e:parity(x.combo)}));
+ document.getElementById("anaAvgGap").textContent=(stats.reduce((s,r)=>s+r.g.avg,0)/stats.length).toFixed(2);
+ document.getElementById("anaAvgSpan").textContent=(stats.reduce((s,r)=>s+r.g.span,0)/stats.length).toFixed(1);
+
+ const dist={};
+ stats.forEach(r=>{let k=`${r.e} pari / ${6-r.e} dispari`;dist[k]=(dist[k]||0)+1});
+ const sorted=Object.entries(dist).sort((a,b)=>b[1]-a[1]);
+ document.getElementById("anaParityMode").textContent=sorted[0]?sorted[0][0]:"-";
+ document.getElementById("parityDistribution").innerHTML=sorted.map(([k,v])=>{
+   const pct=(v/h.length*100).toFixed(1);
+   return `<div class="linkitem"><b>${k}</b><br><span class="badge">${v} estrazioni</span> <span class="muted">${pct}%</span></div>`;
+ }).join("");
+
+ let q=(document.getElementById("analysisSearch").value||"").toLowerCase().trim();
+ let rows=stats.filter(r=>!q||r.x.date.includes(q)||String(r.x.contest).includes(q));
+ document.getElementById("analysisBody").innerHTML=rows.map(r=>
+   `<tr><td>${r.x.date}</td><td>${r.x.contest}</td><td>${r.x.combo.join(" ")}</td><td>${r.e}/${6-r.e}</td><td>${r.g.gaps.join("·")}</td><td>${r.g.avg.toFixed(1)}</td><td>${r.g.min}</td><td>${r.g.max}</td><td>${r.g.span}</td></tr>`
+ ).join("");
+}
+document.getElementById("analysisSearch").oninput=renderAnalysis;
+document.getElementById("clearAnalysisSearch").onclick=()=>{document.getElementById("analysisSearch").value="";renderAnalysis()};
+document.getElementById("singleAnalysisBtn").onclick=()=>{
+ let a=valid(vals("singleAnalysisInputs")),el=document.getElementById("singleAnalysisResult");
+ if(!a){el.className="result bad";el.textContent="Sestina non valida.";return}
+ el.className="result good";el.innerHTML=`${balls(a)}${profileHTML(a)}`;
+};
+document.getElementById("clearSingleAnalysisBtn").onclick=()=>{
+ clearInputs("singleAnalysisInputs");
+ const el=document.getElementById("singleAnalysisResult");el.className="result muted";el.textContent="Inserisci 6 numeri per vedere il profilo della sestina.";
+};
+
+function renderRelations(){
+ let h=getH().sort((a,b)=>a.date.localeCompare(b.date)), pairs=Math.max(0,h.length-1),s1=0,s2=0,gaps=[],items=[];
+ for(let i=1;i<h.length;i++){let c=shared(h[i-1].combo,h[i].combo);if(c>=1)s1++;if(c>=2)s2++;gaps.push(Math.abs(h[i].rank-h[i-1].rank));items.push({a:h[i-1],b:h[i],c,g:Math.abs(h[i].rank-h[i-1].rank)})}
+ document.getElementById("pairs").textContent=pairs;
+ document.getElementById("shared1").textContent=s1;
+ document.getElementById("shared2").textContent=s2;
+ document.getElementById("avgRankGap").textContent=gaps.length?Math.round(gaps.reduce((a,b)=>a+b,0)/gaps.length).toLocaleString("it-IT"):"0";
+ items.sort((x,y)=>y.c-x.c||x.g-y.g);
+ document.getElementById("network").innerHTML=items.slice(0,8).map(x=>`<div class="linkitem"><b>${x.a.date} ↔ ${x.b.date}</b><br><span class="badge">${x.c} numeri in comune</span> <span class="muted">distanza indice ${x.g.toLocaleString("it-IT")}</span></div>`).join("")||'<span class="muted">Servono almeno 2 estrazioni.</span>';
+}
+document.getElementById("relBtn").onclick=()=>{
+ let a=valid(vals("relInputs")),el=document.getElementById("relResult");if(!a){el.className="result bad";el.textContent="Sestina non valida.";return}
+ let targetRank=rankCombo(a);
+ let rows=getH().map(x=>({x,c:shared(a,x.combo),sumgap:Math.abs(sum(a)-sum(x.combo)),pargap:Math.abs(parity(a)-parity(x.combo)),rankgap:Math.abs(targetRank-x.rank)}))
+ .sort((u,v)=>v.c-u.c||u.sumgap-v.sumgap||u.rankgap-v.rankgap).slice(0,8);
+ el.className="result good";
+ el.innerHTML=`${balls(a)}<b>Estratti storici più simili</b><br><br>`+rows.map(r=>`${r.x.date} — ${r.x.combo.join(" ")} — <b>${r.c} comuni</b>, Δsomma ${r.sumgap}`).join("<br>");
+};
+document.getElementById("clearRelBtn").onclick=()=>{
+ clearInputs("relInputs");
+ const el=document.getElementById("relResult"); el.className="result muted"; el.textContent="Ti mostrerò le estrazioni storiche con più numeri in comune e caratteristiche simili.";
+};
+
+
+document.getElementById("rankBtn").onclick=()=>{
+ let a=valid(vals("rankInputs")),el=document.getElementById("rankResult");if(!a){el.textContent="Sestina non valida.";return}
+ el.innerHTML=`${balls(a)}Combinazione n. <b>${rankCombo(a).toLocaleString("it-IT")}</b> / ${TOTAL.toLocaleString("it-IT")}`;
+}
+document.getElementById("unrankBtn").onclick=()=>{
+ let r=Number(document.getElementById("unrankInput").value),a=unrankCombo(r),el=document.getElementById("unrankResult");
+ el.innerHTML=a?`${balls(a)}Combinazione n. <b>${r.toLocaleString("it-IT")}</b>`:"Numero non valido.";
+};
+document.getElementById("clearRankBtn").onclick=()=>{
+ clearInputs("rankInputs"); document.getElementById("rankResult").innerHTML="";
+};
+document.getElementById("clearUnrankBtn").onclick=()=>{
+ document.getElementById("unrankInput").value=""; document.getElementById("unrankResult").innerHTML="";
+};
+
+
+document.getElementById("exportBtn").onclick=()=>{
+ let rows=[["data","concorso","n1","n2","n3","n4","n5","n6","indice"],...getH().map(x=>[x.date,x.contest,...x.combo,x.rank])];
+ let csv=rows.map(r=>r.join(";")).join("\n"),blob=new Blob([csv],{type:"text/csv"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="supercombinazioni_archivio.csv";a.click();URL.revokeObjectURL(a.href)
+};
+document.getElementById("importBtn").onclick=async()=>{
+ let f=document.getElementById("csvFile").files[0];if(!f)return alert("Seleziona un CSV");
+ let t=await f.text(),lines=t.split(/\r?\n/).filter(Boolean),out=[];
+ for(let i=0;i<lines.length;i++){let p=lines[i].split(/[;,]/).map(s=>s.trim());if(i===0&&/data/i.test(p[0]))continue;
+   let combo=valid(p.slice(2,8));let jolly=(p[8]&&Number(p[8])>=1&&Number(p[8])<=90)?Number(p[8]):null;if(combo)out.push({date:p[0],contest:p[1],combo,rank:rankCombo(combo),jolly})
+ }
+ if(!out.length)return alert("Nessuna riga valida trovata.");
+ setH(out);document.getElementById("importInfo").textContent=`Importate ${out.length} estrazioni.`;
+};
+document.getElementById("resetBtn").onclick=()=>{if(confirm("Ripristinare i dati demo?")){localStorage.removeItem("sc_hist_v2");renderAll()}};
+
+function renderAll(){renderArchive();renderDup();renderAnalysis();renderRelations()}
+renderAll();
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
+</script>
+</body>
+</html>
