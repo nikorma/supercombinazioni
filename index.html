@@ -1,45 +1,258 @@
 <!doctype html>
 <html lang="it">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#062317"><title>SuperCombinazioni</title>
-<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07120d">
+<title>SuperCombinazioni</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
 <style>
-:root{--bg:#06150f;--panel:#0d241a;--line:#244b37;--text:#f4fff8;--muted:#9db8a7;--accent:#55db87;--accent2:#cfff71}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}body{min-height:100vh}
-.app{max-width:860px;margin:auto;padding-bottom:92px}.topbar{padding:20px 18px 12px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#052215;font-size:24px;font-weight:900}.brand h1{font-size:1.28rem;margin:0}.brand small{color:var(--muted)}.version{background:#173d2a;color:#bff7d0;border-radius:999px;padding:5px 8px;font-size:.72rem;font-weight:800}
-.page{display:none;padding:0 14px}.page.active{display:block}.hero{background:linear-gradient(145deg,#123a28,#0b2118);border:1px solid #2a5b41;border-radius:24px;padding:18px;margin:8px 0 14px}.hero .label{color:var(--muted);font-size:.85rem}.hero .big{font-size:2rem;font-weight:900;margin:4px 0}.card{background:linear-gradient(180deg,var(--panel),#0a1c14);border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0}.card h2{font-size:1.05rem;margin:0 0 8px}.muted{color:var(--muted);font-size:.9rem}
-.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.qbtn{background:#133725;border:1px solid #2a5c40;color:var(--text);padding:14px;border-radius:16px;text-align:left;font-weight:800}.qbtn span{display:block;color:var(--muted);font-weight:500;font-size:.82rem;margin-top:4px}.primary{background:linear-gradient(135deg,var(--accent),#86ecab);color:#062317;border:0}
-button,input,select{font:inherit}.row{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:13px;padding:11px 14px;font-weight:800;background:var(--accent);color:#062317}.btn.secondary{background:#173827;color:#e9fff0;border:1px solid #315b45}input,select{background:#071a12;color:var(--text);border:1px solid #2c503d;border-radius:12px;padding:11px}.num{width:58px;text-align:center;font-weight:800}.balls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.ball{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#f6fff8;color:#0c3a27;font-weight:900}
-.result{margin-top:12px;padding:13px;border-radius:14px;background:#081c13;border:1px solid #244936}.good{border-color:#3d805b}.bad{border-color:#713b3b;color:#ffd8d8}.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#081c13;border:1px solid #244936;border-radius:14px;padding:12px}.stat b{display:block;font-size:1.2rem;margin-top:4px}
-details{background:#0a1d15;border:1px solid #244936;border-radius:14px;margin:8px 0}summary{padding:13px;font-weight:800}details>div{padding:0 13px 13px}.scroll{overflow:auto}table{width:100%;border-collapse:collapse;font-size:.84rem}th,td{text-align:left;padding:9px;border-bottom:1px solid #244936;white-space:nowrap}
-.bottomnav{position:fixed;left:0;right:0;bottom:0;background:rgba(6,21,15,.96);backdrop-filter:blur(10px);border-top:1px solid #244936;display:grid;grid-template-columns:repeat(4,1fr);padding:8px;z-index:20}.navbtn{background:transparent;border:0;color:#87a895;padding:8px 4px;font-size:.78rem;font-weight:700}.navbtn .ico{display:block;font-size:1.25rem;margin-bottom:3px}.navbtn.active{color:var(--accent)}#updateBar{display:none;position:fixed;left:12px;right:12px;bottom:84px;z-index:50;background:#153b29;border:1px solid var(--accent);border-radius:16px;padding:12px;align-items:center;justify-content:space-between;gap:10px}#updateBar.show{display:flex}.note{font-size:.8rem;color:#88a695}
-@media(min-width:700px){.quick{grid-template-columns:repeat(4,1fr)}.statgrid{grid-template-columns:repeat(4,1fr)}.bottomnav{left:50%;transform:translateX(-50%);max-width:860px}}
-</style></head><body>
-<div class="app"><div class="topbar"><div class="brand"><div class="logo">6</div><div><h1>SuperCombinazioni</h1><small>Archivio e analisi sestine</small></div></div><div class="version">v8</div></div>
+:root{
+ --bg:#07120d;--surface:#0d1d15;--surface2:#12281c;--line:#234433;
+ --text:#f5fff8;--muted:#91aa9a;--green:#4fe184;--lime:#d2ff72;--gold:#ffd166;
+ --red:#ff8585;
+}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{min-height:100vh}.app{max-width:900px;margin:auto;padding-bottom:94px}
+header{padding:18px 16px 10px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px}.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,var(--green),var(--lime));display:grid;place-items:center;color:#082215;font-size:24px;font-weight:950}
+.brand h1{font-size:1.18rem;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:.78rem}.badge{padding:5px 8px;border-radius:999px;background:#173a28;color:#c9fbd9;font-size:.7rem;font-weight:800}
+.page{display:none;padding:0 14px}.page.active{display:block}
+.hero{border:1px solid #2b5c42;border-radius:25px;padding:18px;background:radial-gradient(circle at top right,#1f5739 0,#102b1e 34%,#0a1a12 78%);margin:7px 0 14px}
+.kicker{font-size:.75rem;text-transform:uppercase;letter-spacing:.11em;color:#a4c8b2}.hero h2{font-size:1.8rem;margin:5px 0 3px}.hero p{margin:0;color:var(--muted)}
+.status{margin-top:14px;padding:11px 12px;border:1px solid #2c563f;background:#0b2116;border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}.status strong{display:block}.status small{color:var(--muted)}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}.quick button{min-height:104px;border:1px solid var(--line);border-radius:19px;background:linear-gradient(180deg,#112a1d,#0d2117);color:var(--text);padding:14px;text-align:left}.quick button.primary{background:linear-gradient(135deg,var(--green),#86efa9);color:#062216;border:0}.quick .ico{font-size:1.45rem}.quick b{display:block;margin-top:9px}.quick span{display:block;font-size:.78rem;margin-top:3px;color:var(--muted)}.quick .primary span{color:#245b3b}
+.card{background:linear-gradient(180deg,var(--surface),#0a1911);border:1px solid var(--line);border-radius:20px;padding:15px;margin:12px 0}.card h3{margin:0 0 9px;font-size:1.02rem}.muted{color:var(--muted);font-size:.87rem}
+.row{display:flex;gap:8px;flex-wrap:wrap}button,input,select{font:inherit}.btn{border:0;border-radius:13px;background:var(--green);color:#062216;padding:11px 14px;font-weight:850}.btn.secondary{background:#173527;color:#eafff0;border:1px solid #315b45}.btn.gold{background:var(--gold);color:#302300}
+input,select{background:#071811;color:var(--text);border:1px solid #2b4d3a;border-radius:12px;padding:11px}.num{width:58px;text-align:center;font-weight:850}
+.balls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.ball{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#f7fff9;color:#0a3925;font-weight:950;box-shadow:inset 0 -4px 0 rgba(0,0,0,.08)}
+.result{padding:13px;margin-top:11px;border:1px solid #264936;border-radius:14px;background:#081a11}.result.good{border-color:#3b875b}.result.bad{border-color:#7a3e3e;color:#ffd7d7}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.stat{border:1px solid #244836;border-radius:14px;padding:11px;background:#081b12}.stat span{color:var(--muted);font-size:.74rem}.stat b{display:block;font-size:1.18rem;margin-top:3px}
+details{border:1px solid var(--line);border-radius:15px;background:#0a1c13;margin:9px 0}summary{padding:13px;font-weight:800;cursor:pointer}details>div{padding:0 13px 13px}
+.scroll{overflow:auto;max-height:58vh}table{width:100%;border-collapse:collapse;font-size:.8rem}th,td{padding:9px;border-bottom:1px solid #203d2e;text-align:left;white-space:nowrap}th{position:sticky;top:0;background:#0d2117;z-index:1}
+.bottom{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(7,18,13,.96);backdrop-filter:blur(12px);border-top:1px solid #244536;display:grid;grid-template-columns:repeat(5,1fr);padding:7px 5px calc(7px + env(safe-area-inset-bottom))}
+.nav{border:0;background:transparent;color:#799886;padding:5px 2px;font-size:.68rem;font-weight:700}.nav i{font-style:normal;display:block;font-size:1.18rem;margin-bottom:2px}.nav.active{color:var(--green)}
+.pill{display:inline-block;border-radius:999px;padding:4px 7px;background:#173b29;color:#c4f9d4;font-size:.72rem;font-weight:800}.yearline{display:flex;gap:6px;overflow:auto;padding-bottom:5px}.yearline button{white-space:nowrap}
+#updateBar{display:none;position:fixed;left:12px;right:12px;bottom:80px;z-index:40;border:1px solid var(--green);background:#153b28;border-radius:16px;padding:11px;align-items:center;justify-content:space-between;gap:10px}#updateBar.show{display:flex}
+@media(min-width:700px){.quick{grid-template-columns:repeat(4,1fr)}.stats{grid-template-columns:repeat(4,1fr)}.bottom{left:50%;transform:translateX(-50%);max-width:900px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand"><div class="logo">6</div><div><h1>SuperCombinazioni</h1><p>Storico • verifica • analisi</p></div></div>
+ <span class="badge">v9</span>
+</header>
+
 <main>
-<section id="home" class="page active"><div class="hero"><div class="label">Spazio combinatorio</div><div class="big">622.614.630</div><div class="muted">Tutte le possibili sestine di 6 numeri su 90.</div><div class="quick"><button class="qbtn primary" data-go="generate">🎲 Genera sestina<span>Casuale o con pari/dispari</span></button><button class="qbtn" data-go="check">✓ È mai uscita?<span>Controlla una sestina</span></button><button class="qbtn" data-go="analysis">📊 Analisi<span>Pari, dispari e distanze</span></button><button class="qbtn" data-go="archive">🗂 Archivio<span>Consulta lo storico</span></button></div></div><div class="card"><h2>Riepilogo archivio</h2><div class="statgrid"><div class="stat">Estrazioni<b id="homeCount">0</b></div><div class="stat">Duplicati<b id="homeDup">0</b></div><div class="stat">Dist. media<b id="homeGap">0</b></div><div class="stat">Profilo più comune<b id="homeParity">-</b></div></div></div><div class="card"><h2>Nota</h2><div class="muted">Le analisi descrivono lo storico e non aumentano la probabilità di una sestina futura.</div></div></section>
+<section id="home" class="page active">
+ <div class="hero">
+  <div class="kicker">SuperEnalotto</div>
+  <h2>622.614.630 sestine</h2>
+  <p>Esplora lo storico e genera combinazioni senza confondere statistica e previsione.</p>
+  <div class="status">
+   <div><strong id="archiveStatus">Caricamento archivio…</strong><small id="archiveRange">Attendere</small></div>
+   <span class="pill" id="archiveCount">0</span>
+  </div>
+ </div>
+ <div class="quick">
+  <button class="primary" data-go="generate"><span class="ico">🎲</span><b>Genera</b><span>Casuale o pari/dispari</span></button>
+  <button data-go="check"><span class="ico">✓</span><b>Verifica</b><span>È mai uscita?</span></button>
+  <button data-go="stats"><span class="ico">📊</span><b>Statistiche</b><span>Pari, distanze, legami</span></button>
+  <button data-go="archive"><span class="ico">🗂</span><b>Archivio</b><span>Tutte le estrazioni</span></button>
+ </div>
+ <div class="card">
+  <h3>Riepilogo storico</h3>
+  <div class="stats">
+   <div class="stat"><span>Estrazioni</span><b id="homeDraws">0</b></div>
+   <div class="stat"><span>Sestine duplicate</span><b id="homeDuplicates">0</b></div>
+   <div class="stat"><span>Distanza media</span><b id="homeAvgGap">0</b></div>
+   <div class="stat"><span>Pari/dispari più comune</span><b id="homeParity">-</b></div>
+  </div>
+ </div>
+</section>
 
-<section id="generate" class="page"><div class="card"><h2>🎲 Casuale automatica</h2><div class="muted">Genera subito 6 numeri diversi da 1 a 90.</div><button id="autoGenerateBtn" class="btn" style="margin-top:12px">Genera subito</button><div id="autoResult" class="result muted">Nessuna sestina generata.</div></div><div class="card"><h2>Personalizza pari / dispari</h2><div class="row"><label style="flex:1"><span class="muted">Pari</span><br><select id="evenCount" style="width:100%"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></label><label style="flex:1"><span class="muted">Dispari</span><br><select id="oddCount" style="width:100%"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></label></div><div class="row" style="margin-top:10px"><button id="parityGenerateBtn" class="btn">Genera</button><button id="clearGeneratorBtn" class="btn secondary">Pulisci</button></div><div id="parityResult" class="result muted">Scegli il rapporto e genera.</div></div></section>
+<section id="generate" class="page">
+ <div class="card">
+  <h3>🎲 Generazione automatica</h3>
+  <p class="muted">Crea 6 numeri casuali distinti da 1 a 90.</p>
+  <button id="randomBtn" class="btn">Genera sestina</button>
+  <div id="randomResult" class="result muted">Premi il pulsante per iniziare.</div>
+ </div>
+ <div class="card">
+  <h3>Pari / dispari personalizzati</h3>
+  <div class="row">
+   <label style="flex:1"><span class="muted">Pari</span><br><select id="evenCount" style="width:100%"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></label>
+   <label style="flex:1"><span class="muted">Dispari</span><br><select id="oddCount" style="width:100%"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></label>
+  </div>
+  <div class="row" style="margin-top:10px"><button id="parityBtn" class="btn">Genera</button><button id="clearGenerate" class="btn secondary">Pulisci</button></div>
+  <div id="parityResult" class="result muted">Scegli il rapporto desiderato.</div>
+ </div>
+</section>
 
-<section id="check" class="page"><div class="card"><h2>È mai uscita?</h2><div class="row" id="checkInputs"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"></div><div class="row" style="margin-top:10px"><button id="checkBtn" class="btn">Controlla</button><button id="clearCheckBtn" class="btn secondary">Pulisci</button></div><div id="checkResult" class="result muted">Inserisci la sestina da verificare.</div></div><details><summary>Come avrebbe performato nello storico?</summary><div><button id="performanceBtn" class="btn">Calcola</button><div id="performanceResult" class="result muted">Usa la sestina inserita sopra.</div></div></details></section>
+<section id="check" class="page">
+ <div class="card">
+  <h3>✓ È mai uscita?</h3>
+  <p class="muted">Inserisci 6 numeri. Il controllo usa tutto lo storico caricato.</p>
+  <div class="row" id="checkInputs"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"></div>
+  <div class="row" style="margin-top:10px"><button id="checkBtn" class="btn">Controlla</button><button id="clearCheck" class="btn secondary">Pulisci</button></div>
+  <div id="checkResult" class="result muted">Inserisci la sestina.</div>
+ </div>
+ <details>
+  <summary>Quanto avrebbe preso nello storico?</summary>
+  <div><button id="performanceBtn" class="btn gold">Calcola 2 / 3 / 4 / 5 / 5+1 / 6</button><div id="performanceResult" class="result muted">Usa la sestina inserita sopra.</div></div>
+ </details>
+</section>
 
-<section id="analysis" class="page"><div class="card"><h2>Statistiche generali</h2><div class="statgrid"><div class="stat">Estrazioni<b id="anaCount">0</b></div><div class="stat">Dist. media<b id="anaAvgGap">0</b></div><div class="stat">Ampiezza media<b id="anaAvgSpan">0</b></div><div class="stat">Pari/dispari più comune<b id="anaParityMode">-</b></div></div></div><details open><summary>Pari / dispari</summary><div id="parityDistribution"></div></details><details><summary>Legami tra estrazioni</summary><div id="relationsBox" class="muted"></div></details><details><summary>Analizza una sestina</summary><div><div class="row" id="singleAnalysisInputs"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"></div><div class="row" style="margin-top:10px"><button id="singleAnalysisBtn" class="btn">Analizza</button><button id="clearSingleAnalysisBtn" class="btn secondary">Pulisci</button></div><div id="singleAnalysisResult" class="result muted">Inserisci una sestina.</div></div></details></section>
+<section id="stats" class="page">
+ <div class="card">
+  <h3>📊 Statistiche storiche</h3>
+  <div class="stats">
+   <div class="stat"><span>Estrazioni</span><b id="statDraws">0</b></div>
+   <div class="stat"><span>Distanza media</span><b id="statGap">0</b></div>
+   <div class="stat"><span>Ampiezza media</span><b id="statSpan">0</b></div>
+   <div class="stat"><span>Profilo P/D</span><b id="statParity">-</b></div>
+  </div>
+ </div>
+ <details open><summary>Distribuzione pari / dispari</summary><div id="parityDist"></div></details>
+ <details><summary>Distanze tra numeri</summary><div id="gapDist"></div></details>
+ <details><summary>Legami fra estrazioni consecutive</summary><div id="relations"></div></details>
+ <details><summary>Analizza una sestina</summary><div><div class="row" id="analysisInputs"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"><input class="num" inputmode="numeric"></div><div class="row" style="margin-top:10px"><button id="analysisBtn" class="btn">Analizza</button><button id="clearAnalysis" class="btn secondary">Pulisci</button></div><div id="analysisResult" class="result muted">Inserisci una sestina.</div></div></details>
+</section>
 
-<section id="archive" class="page"><div class="card"><h2>Archivio</h2><div class="row"><input id="archiveSearch" placeholder="Cerca data, concorso o numero..." style="flex:1"><button id="clearArchiveSearch" class="btn secondary">Pulisci</button></div><div class="scroll" style="margin-top:10px"><table><thead><tr><th>Data</th><th>Conc.</th><th>Sestina</th><th>P/D</th><th>Dist.</th></tr></thead><tbody id="archiveBody"></tbody></table></div></div><details><summary>Importa / esporta archivio</summary><div><div class="muted">CSV: data;concorso;n1;n2;n3;n4;n5;n6;jolly</div><input id="csvFile" type="file" accept=".csv,text/csv" style="width:100%;margin-top:10px"><div class="row" style="margin-top:10px"><button id="importBtn" class="btn">Importa</button><button id="exportBtn" class="btn secondary">Esporta CSV</button></div><div id="importInfo" class="note"></div></div></details></section>
-</main></div>
-<nav class="bottomnav"><button class="navbtn active" data-page="home"><span class="ico">⌂</span>Home</button><button class="navbtn" data-page="generate"><span class="ico">🎲</span>Genera</button><button class="navbtn" data-page="analysis"><span class="ico">📊</span>Analisi</button><button class="navbtn" data-page="archive"><span class="ico">🗂</span>Archivio</button></nav>
+<section id="archive" class="page">
+ <div class="card">
+  <h3>🗂 Archivio estrazioni</h3>
+  <div class="row"><input id="archiveSearch" placeholder="Data, anno o numero..." style="flex:1"><button id="clearArchive" class="btn secondary">Pulisci</button></div>
+  <div class="yearline" id="yearFilters" style="margin-top:10px"></div>
+  <div class="scroll" style="margin-top:8px"><table><thead><tr><th>Data</th><th>Conc.</th><th>Sestina</th><th>Jolly</th><th>SuperStar</th><th>P/D</th><th>Dist.</th></tr></thead><tbody id="archiveBody"></tbody></table></div>
+ </div>
+ <details><summary>Gestione archivio</summary><div><div class="muted">La fonte principale è <code>history.json</code>. Puoi comunque importare/esportare CSV.</div><div class="row" style="margin-top:10px"><input id="csvFile" type="file" accept=".csv,text/csv" style="flex:1"><button id="importBtn" class="btn">Importa</button><button id="exportBtn" class="btn secondary">Esporta</button></div><div id="importInfo" class="muted" style="margin-top:8px"></div></div></details>
+</section>
+</main>
+</div>
+
+<nav class="bottom">
+ <button class="nav active" data-page="home"><i>⌂</i>Home</button>
+ <button class="nav" data-page="generate"><i>🎲</i>Genera</button>
+ <button class="nav" data-page="check"><i>✓</i>Verifica</button>
+ <button class="nav" data-page="stats"><i>📊</i>Statistiche</button>
+ <button class="nav" data-page="archive"><i>🗂</i>Archivio</button>
+</nav>
+
 <div id="updateBar"><b>Nuova versione disponibile</b><button id="updateNowBtn" class="btn">Aggiorna</button></div>
+
 <script>
-const demo=[{date:"2026-07-16",contest:"113",combo:[1,15,21,46,52,67]},{date:"2026-07-17",contest:"114",combo:[7,34,45,64,65,76]},{date:"2026-07-18",contest:"115",combo:[1,28,52,62,79,86]},{date:"2026-07-21",contest:"116",combo:[13,14,15,29,38,63]},{date:"2026-07-23",contest:"117",combo:[2,12,22,34,70,74]},{date:"2026-07-24",contest:"118",combo:[20,40,53,61,74,79]},{date:"2026-07-25",contest:"119",combo:[18,19,33,34,61,85]},{date:"2026-07-28",contest:"120",combo:[1,6,9,43,54,62]},{date:"2026-07-30",contest:"121",combo:[20,47,75,76,78,89]},{date:"2026-08-08",contest:"127",combo:[9,12,55,61,82,85]}];
-function C(n,k){if(k<0||n<k)return 0;if(k===0||k===n)return 1;k=Math.min(k,n-k);let r=1;for(let i=1;i<=k;i++)r=r*(n-k+i)/i;return Math.round(r)}function valid(a){const b=a.map(Number).sort((x,y)=>x-y);return b.length===6&&!b.some(x=>!Number.isInteger(x)||x<1||x>90)&&new Set(b).size===6?b:null}function rankCombo(a){a=valid(a);if(!a)return null;let r=1,p=0;for(let i=0;i<6;i++){let x=a[i],rem=6-i;for(let v=p+1;v<x;v++)r+=C(90-v,rem-1);p=x}return r}function parity(a){return a.filter(x=>x%2===0).length}function shared(a,b){return a.filter(x=>b.includes(x)).length}function key(a){return [...a].sort((x,y)=>x-y).join("-")}function balls(a){return `<div class="balls">${a.map(n=>`<span class="ball">${n}</span>`).join("")}</div>`}function gapStats(a){const s=[...a].sort((x,y)=>x-y),g=[];for(let i=1;i<s.length;i++)g.push(s[i]-s[i-1]);return{gaps:g,avg:g.reduce((x,y)=>x+y,0)/g.length,span:s[5]-s[0]}}function getH(){const raw=localStorage.getItem("sc_hist_v2"),h=raw?JSON.parse(raw):demo;return h.map(x=>({...x,combo:valid(x.combo),rank:x.rank||rankCombo(x.combo)})).filter(x=>x.combo)}function setH(h){localStorage.setItem("sc_hist_v2",JSON.stringify(h));renderAll()}function vals(id){return [...document.querySelectorAll(`#${id} input`)].map(x=>x.value)}function clearInputs(id){document.querySelectorAll(`#${id} input`).forEach(x=>x.value="")}function randomPick(arr,n){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,n)}function randomCombo(){return randomPick(Array.from({length:90},(_,i)=>i+1),6).sort((a,b)=>a-b)}function parityCombo(e,o){e=Number(e);o=Number(o);if(e+o!==6)return null;const ev=[],od=[];for(let n=1;n<=90;n++)(n%2===0?ev:od).push(n);return [...randomPick(ev,e),...randomPick(od,o)].sort((a,b)=>a-b)}
-function go(page){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".navbtn").forEach(x=>x.classList.remove("active"));document.getElementById(page).classList.add("active");const n=document.querySelector(`.navbtn[data-page="${page}"]`);if(n)n.classList.add("active");window.scrollTo(0,0)}document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
-function comboSummary(a){const g=gapStats(a),e=parity(a),m=getH().filter(x=>key(x.combo)===key(a));return `${balls(a)}<div class="statgrid"><div class="stat">Pari / dispari<b>${e}/${6-e}</b></div><div class="stat">Indice<b>${rankCombo(a).toLocaleString("it-IT")}</b></div><div class="stat">Distanza media<b>${g.avg.toFixed(1)}</b></div><div class="stat">Già uscita<b>${m.length?"Sì":"No"}</b></div></div><div class="note" style="margin-top:10px">Distanze: ${g.gaps.join(" · ")} — ampiezza ${g.span}</div>`}
-document.getElementById("autoGenerateBtn").onclick=()=>{autoResult.className="result good";autoResult.innerHTML=comboSummary(randomCombo())};evenCount.onchange=()=>oddCount.value=String(6-Number(evenCount.value));oddCount.onchange=()=>evenCount.value=String(6-Number(oddCount.value));parityGenerateBtn.onclick=()=>{const a=parityCombo(evenCount.value,oddCount.value);parityResult.className=a?"result good":"result bad";parityResult.innerHTML=a?comboSummary(a):"Pari + dispari deve essere 6."};clearGeneratorBtn.onclick=()=>{evenCount.value=3;oddCount.value=3;parityResult.className="result muted";parityResult.textContent="Scegli il rapporto e genera."};
-checkBtn.onclick=()=>{const a=valid(vals("checkInputs"));if(!a){checkResult.className="result bad";checkResult.textContent="Sestina non valida.";return}const m=getH().filter(x=>key(x.combo)===key(a));checkResult.className="result good";checkResult.innerHTML=`${balls(a)}<b>${m.length?`Uscita ${m.length} volta/e`:"Mai uscita nello storico caricato"}</b>`};clearCheckBtn.onclick=()=>{clearInputs("checkInputs");checkResult.className="result muted";checkResult.textContent="Inserisci la sestina da verificare."};performanceBtn.onclick=()=>{const a=valid(vals("checkInputs"));if(!a){performanceResult.textContent="Inserisci prima una sestina valida.";return}const c={2:0,3:0,4:0,5:0,6:0};getH().forEach(x=>{const n=shared(a,x.combo);if(c[n]!==undefined)c[n]++});performanceResult.className="result good";performanceResult.innerHTML=`<div class="statgrid">${[6,5,4,3,2].map(n=>`<div class="stat">${n} numeri<b>${c[n]}</b></div>`).join("")}</div>`};
-singleAnalysisBtn.onclick=()=>{const a=valid(vals("singleAnalysisInputs"));if(!a){singleAnalysisResult.textContent="Sestina non valida.";return}singleAnalysisResult.className="result good";singleAnalysisResult.innerHTML=comboSummary(a)};clearSingleAnalysisBtn.onclick=()=>{clearInputs("singleAnalysisInputs");singleAnalysisResult.textContent="Inserisci una sestina."};
-function renderAnalysis(){const h=getH(),s=h.map(x=>({e:parity(x.combo),g:gapStats(x.combo)}));anaCount.textContent=h.length;anaAvgGap.textContent=h.length?(s.reduce((a,b)=>a+b.g.avg,0)/h.length).toFixed(2):0;anaAvgSpan.textContent=h.length?(s.reduce((a,b)=>a+b.g.span,0)/h.length).toFixed(1):0;const d={};s.forEach(r=>{const k=`${r.e}/${6-r.e}`;d[k]=(d[k]||0)+1});const so=Object.entries(d).sort((a,b)=>b[1]-a[1]);anaParityMode.textContent=so[0]?so[0][0]:"-";parityDistribution.innerHTML=so.map(([k,v])=>`<div class="result"><b>${k}</b> — ${v} estrazioni (${(v/h.length*100).toFixed(1)}%)</div>`).join("");let rel=[],hs=[...h].sort((a,b)=>a.date.localeCompare(b.date));for(let i=1;i<hs.length;i++){let n=shared(hs[i-1].combo,hs[i].combo);if(n)rel.push(`${hs[i-1].date} ↔ ${hs[i].date}: ${n} in comune`)}relationsBox.innerHTML=rel.length?rel.slice(0,12).map(x=>`<div class="result">${x}</div>`).join(""):"Nessun legame rilevante."}
-function renderArchive(){let h=[...getH()].sort((a,b)=>b.date.localeCompare(a.date)),q=archiveSearch.value.toLowerCase().trim();if(q)h=h.filter(x=>x.date.includes(q)||String(x.contest).includes(q)||x.combo.some(n=>String(n)===q));archiveBody.innerHTML=h.map(x=>{let e=parity(x.combo),g=gapStats(x.combo);return `<tr><td>${x.date}</td><td>${x.contest}</td><td>${x.combo.join(" ")}</td><td>${e}/${6-e}</td><td>${g.avg.toFixed(1)}</td></tr>`}).join("")}archiveSearch.oninput=renderArchive;clearArchiveSearch.onclick=()=>{archiveSearch.value="";renderArchive()};exportBtn.onclick=()=>{const rows=[["data","concorso","n1","n2","n3","n4","n5","n6"],...getH().map(x=>[x.date,x.contest,...x.combo])];const blob=new Blob([rows.map(r=>r.join(";")).join("\n")],{type:"text/csv"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="supercombinazioni_archivio.csv";a.click()};importBtn.onclick=async()=>{const f=csvFile.files[0];if(!f)return;const lines=(await f.text()).split(/\r?\n/).filter(Boolean),out=[];for(let i=0;i<lines.length;i++){const p=lines[i].split(/[;,]/).map(s=>s.trim());if(i===0&&/data/i.test(p[0]))continue;const c=valid(p.slice(2,8));if(c)out.push({date:p[0],contest:p[1],combo:c,rank:rankCombo(c)})}if(out.length){setH(out);importInfo.textContent=`Importate ${out.length} estrazioni.`}};
-function renderHome(){const h=getH(),m={};h.forEach(x=>(m[key(x.combo)]??=[]).push(x));const s=h.map(x=>({e:parity(x.combo),g:gapStats(x.combo)})),d={};s.forEach(r=>{const k=`${r.e}/${6-r.e}`;d[k]=(d[k]||0)+1});const mode=Object.entries(d).sort((a,b)=>b[1]-a[1])[0];homeCount.textContent=h.length;homeDup.textContent=Object.values(m).filter(v=>v.length>1).length;homeGap.textContent=h.length?(s.reduce((a,b)=>a+b.g.avg,0)/h.length).toFixed(2):0;homeParity.textContent=mode?mode[0]:"-"}function renderAll(){renderHome();renderAnalysis();renderArchive()}renderAll();
-let refreshing=false;if("serviceWorker"in navigator)window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js");if(reg.waiting)updateBar.classList.add("show");reg.addEventListener("updatefound",()=>{const nw=reg.installing;if(nw)nw.addEventListener("statechange",()=>{if(nw.state==="installed"&&navigator.serviceWorker.controller)updateBar.classList.add("show")})});updateNowBtn.onclick=()=>{if(reg.waiting)reg.waiting.postMessage({type:"SKIP_WAITING"});else location.reload()};navigator.serviceWorker.addEventListener("controllerchange",()=>{if(refreshing)return;refreshing=true;location.reload()});try{await reg.update()}catch(e){}}catch(e){}})
-</script></body></html>
+let HISTORY=[];
+let META={};
+let selectedYear="all";
+const TOTAL=622614630;
+
+const $=id=>document.getElementById(id);
+function valid(a){const b=a.map(Number).sort((x,y)=>x-y);return b.length===6&&!b.some(x=>!Number.isInteger(x)||x<1||x>90)&&new Set(b).size===6?b:null}
+function vals(id){return [...document.querySelectorAll(`#${id} input`)].map(x=>x.value)}
+function clearVals(id){document.querySelectorAll(`#${id} input`).forEach(x=>x.value="")}
+function key(a){return [...a].sort((x,y)=>x-y).join("-")}
+function parity(a){return a.filter(x=>x%2===0).length}
+function shared(a,b){return a.filter(n=>b.includes(n)).length}
+function gaps(a){const s=[...a].sort((x,y)=>x-y),g=[];for(let i=1;i<s.length;i++)g.push(s[i]-s[i-1]);return {items:g,avg:g.reduce((x,y)=>x+y,0)/5,min:Math.min(...g),max:Math.max(...g),span:s[5]-s[0]}}
+function C(n,k){if(k<0||n<k)return 0;if(k===0||k===n)return 1;k=Math.min(k,n-k);let r=1;for(let i=1;i<=k;i++)r=r*(n-k+i)/i;return Math.round(r)}
+function rank(a){a=valid(a);if(!a)return null;let r=1,p=0;for(let i=0;i<6;i++){let x=a[i],rem=6-i;for(let v=p+1;v<x;v++)r+=C(90-v,rem-1);p=x}return r}
+function balls(a){return `<div class="balls">${a.map(n=>`<span class="ball">${n}</span>`).join("")}</div>`}
+function pick(arr,n){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,n)}
+function randomCombo(){return pick(Array.from({length:90},(_,i)=>i+1),6).sort((a,b)=>a-b)}
+function parityCombo(e,o){e=+e;o=+o;if(e+o!==6)return null;const ev=[],od=[];for(let n=1;n<=90;n++)(n%2?od:ev).push(n);return [...pick(ev,e),...pick(od,o)].sort((a,b)=>a-b)}
+function formatCombo(a){const g=gaps(a),e=parity(a),matches=HISTORY.filter(x=>key(x.combo)===key(a));return `${balls(a)}<div class="stats"><div class="stat"><span>Pari / dispari</span><b>${e}/${6-e}</b></div><div class="stat"><span>Indice</span><b>${rank(a).toLocaleString("it-IT")}</b></div><div class="stat"><span>Distanza media</span><b>${g.avg.toFixed(1)}</b></div><div class="stat"><span>Già uscita</span><b>${matches.length?"Sì":"No"}</b></div></div><div class="muted" style="margin-top:9px">Distanze: ${g.items.join(" · ")} · ampiezza ${g.span}</div>`}
+
+function go(page){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));$(page).classList.add("active");const n=document.querySelector(`.nav[data-page="${page}"]`);if(n)n.classList.add("active");window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+
+async function loadHistory(){
+ try{
+  const r=await fetch(`history.json?v=${Date.now()}`,{cache:"no-store"});
+  if(!r.ok)throw new Error("history missing");
+  const data=await r.json();
+  HISTORY=(data.draws||[]).map(x=>({...x,combo:valid(x.combo)})).filter(x=>x.combo);
+  META=data.meta||{};
+  localStorage.setItem("sc_history_backup",JSON.stringify(data));
+ }catch(e){
+  const raw=localStorage.getItem("sc_history_backup");
+  if(raw){const data=JSON.parse(raw);HISTORY=(data.draws||[]).map(x=>({...x,combo:valid(x.combo)})).filter(x=>x.combo);META=data.meta||{}}
+ }
+ renderAll();
+}
+
+function renderAll(){renderHome();renderStats();renderYears();renderArchive()}
+function renderHome(){
+ $("homeDraws").textContent=HISTORY.length.toLocaleString("it-IT");
+ $("archiveCount").textContent=HISTORY.length.toLocaleString("it-IT");
+ if(HISTORY.length){
+  const dates=HISTORY.map(x=>x.date).sort();
+  $("archiveStatus").textContent="Archivio storico caricato";
+  $("archiveRange").textContent=`${dates[0].slice(0,4)} → ${dates.at(-1).slice(0,4)}`;
+ }else{
+  $("archiveStatus").textContent="Archivio non ancora generato";
+  $("archiveRange").textContent="Esegui l'Action “Update historical archive”";
+ }
+ const map={};HISTORY.forEach(x=>(map[key(x.combo)]??=[]).push(x));
+ $("homeDuplicates").textContent=Object.values(map).filter(v=>v.length>1).length;
+ if(HISTORY.length){
+  const gs=HISTORY.map(x=>gaps(x.combo).avg), pd={};
+  HISTORY.forEach(x=>{let e=parity(x.combo),k=`${e}/${6-e}`;pd[k]=(pd[k]||0)+1});
+  $("homeAvgGap").textContent=(gs.reduce((a,b)=>a+b,0)/gs.length).toFixed(2);
+  $("homeParity").textContent=Object.entries(pd).sort((a,b)=>b[1]-a[1])[0][0];
+ } else {$("homeAvgGap").textContent="0";$("homeParity").textContent="-"}
+}
+function renderStats(){
+ $("statDraws").textContent=HISTORY.length.toLocaleString("it-IT");
+ if(!HISTORY.length){$("parityDist").innerHTML='<p class="muted">Archivio non disponibile.</p>';return}
+ const pd={},avgs=[],spans=[],gapBucket={};
+ HISTORY.forEach(x=>{const e=parity(x.combo),k=`${e} pari / ${6-e} dispari`;pd[k]=(pd[k]||0)+1;const g=gaps(x.combo);avgs.push(g.avg);spans.push(g.span);const b=Math.floor(g.avg/5)*5, bk=`${b}–${b+4.9}`;gapBucket[bk]=(gapBucket[bk]||0)+1});
+ const ps=Object.entries(pd).sort((a,b)=>b[1]-a[1]);
+ $("statGap").textContent=(avgs.reduce((a,b)=>a+b,0)/avgs.length).toFixed(2);
+ $("statSpan").textContent=(spans.reduce((a,b)=>a+b,0)/spans.length).toFixed(1);
+ $("statParity").textContent=ps[0][0].replace(" pari / ","/");
+ $("parityDist").innerHTML=ps.map(([k,v])=>`<div class="result"><b>${k}</b> — ${v} (${(v/HISTORY.length*100).toFixed(1)}%)</div>`).join("");
+ $("gapDist").innerHTML=Object.entries(gapBucket).sort((a,b)=>parseFloat(a[0])-parseFloat(b[0])).map(([k,v])=>`<div class="result"><b>Media ${k}</b> — ${v} estrazioni</div>`).join("");
+ const hs=[...HISTORY].sort((a,b)=>a.date.localeCompare(b.date)), rel=[];
+ for(let i=1;i<hs.length;i++){const n=shared(hs[i-1].combo,hs[i].combo);if(n>=2)rel.push({a:hs[i-1],b:hs[i],n})}
+ rel.sort((a,b)=>b.n-a.n);
+ $("relations").innerHTML=rel.length?rel.slice(0,30).map(r=>`<div class="result"><b>${r.n} numeri in comune</b><br><span class="muted">${r.a.date} → ${r.b.date}</span></div>`).join(""):'<p class="muted">Nessuna relazione con almeno 2 numeri in comune.</p>';
+}
+function renderYears(){
+ const years=[...new Set(HISTORY.map(x=>x.date.slice(0,4)))].sort((a,b)=>b-a);
+ $("yearFilters").innerHTML=`<button class="btn ${selectedYear==="all"?"":"secondary"}" onclick="selectYear('all')">Tutti</button>`+years.map(y=>`<button class="btn ${selectedYear===y?"":"secondary"}" onclick="selectYear('${y}')">${y}</button>`).join("");
+}
+window.selectYear=y=>{selectedYear=y;renderYears();renderArchive()}
+function renderArchive(){
+ let h=[...HISTORY].sort((a,b)=>b.date.localeCompare(a.date));
+ if(selectedYear!=="all")h=h.filter(x=>x.date.startsWith(selectedYear));
+ const q=$("archiveSearch").value.trim().toLowerCase();
+ if(q)h=h.filter(x=>x.date.includes(q)||String(x.contest||"").includes(q)||x.combo.some(n=>String(n)===q));
+ $("archiveBody").innerHTML=h.map(x=>{const e=parity(x.combo),g=gaps(x.combo);return `<tr><td>${x.date}</td><td>${x.contest??"-"}</td><td>${x.combo.join(" ")}</td><td>${x.jolly??"-"}</td><td>${x.superstar??"-"}</td><td>${e}/${6-e}</td><td>${g.avg.toFixed(1)}</td></tr>`}).join("");
+}
+$("archiveSearch").oninput=renderArchive;$("clearArchive").onclick=()=>{$("archiveSearch").value="";selectedYear="all";renderYears();renderArchive()};
+
+$("randomBtn").onclick=()=>{$("randomResult").className="result good";$("randomResult").innerHTML=formatCombo(randomCombo())};
+$("evenCount").onchange=()=>$("oddCount").value=String(6-+$("evenCount").value);
+$("oddCount").onchange=()=>$("evenCount").value=String(6-+$("oddCount").value);
+$("parityBtn").onclick=()=>{const a=parityCombo($("evenCount").value,$("oddCount").value);$("parityResult").className=a?"result good":"result bad";$("parityResult").innerHTML=a?formatCombo(a):"Pari + dispari deve essere 6."};
+$("clearGenerate").onclick=()=>{$("evenCount").value=3;$("oddCount").value=3;$("parityResult").className="result muted";$("parityResult").textContent="Scegli il rapporto desiderato."};
+
+$("checkBtn").onclick=()=>{const a=valid(vals("checkInputs"));if(!a){$("checkResult").className="result bad";$("checkResult").textContent="Sestina non valida.";return}const m=HISTORY.filter(x=>key(x.combo)===key(a));$("checkResult").className="result good";$("checkResult").innerHTML=`${balls(a)}<b>${m.length?`Uscita ${m.length} volta/e`:"Mai uscita nello storico caricato"}</b>${m.length?`<br><span class="muted">${m.map(x=>`${x.date}${x.contest?` · concorso ${x.contest}`:""}`).join("<br>")}</span>`:""}`};
+$("clearCheck").onclick=()=>{clearVals("checkInputs");$("checkResult").className="result muted";$("checkResult").textContent="Inserisci la sestina.";$("performanceResult").className="result muted";$("performanceResult").textContent="Usa la sestina inserita sopra."};
+$("performanceBtn").onclick=()=>{const a=valid(vals("checkInputs"));if(!a){$("performanceResult").textContent="Inserisci prima una sestina valida.";return}const c={2:0,3:0,4:0,5:0,6:0,"5+1":0};HISTORY.forEach(x=>{const n=shared(a,x.combo);if(c[n]!==undefined)c[n]++;if(n===5&&x.jolly&&a.includes(+x.jolly)&&!x.combo.includes(+x.jolly))c["5+1"]++});$("performanceResult").className="result good";$("performanceResult").innerHTML=`<div class="stats">${["6","5+1","5","4","3","2"].map(n=>`<div class="stat"><span>${n}</span><b>${c[n]}</b></div>`).join("")}</div>`};
+
+$("analysisBtn").onclick=()=>{const a=valid(vals("analysisInputs"));if(!a){$("analysisResult").textContent="Sestina non valida.";return}$("analysisResult").className="result good";$("analysisResult").innerHTML=formatCombo(a)};
+$("clearAnalysis").onclick=()=>{clearVals("analysisInputs");$("analysisResult").className="result muted";$("analysisResult").textContent="Inserisci una sestina."};
+
+$("exportBtn").onclick=()=>{const rows=[["data","concorso","n1","n2","n3","n4","n5","n6","jolly","superstar"],...HISTORY.map(x=>[x.date,x.contest??"",...x.combo,x.jolly??"",x.superstar??""])];const b=new Blob([rows.map(r=>r.join(";")).join("\n")],{type:"text/csv"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="supercombinazioni_storico.csv";a.click()};
+$("importBtn").onclick=async()=>{const f=$("csvFile").files[0];if(!f)return;const lines=(await f.text()).split(/\r?\n/).filter(Boolean),out=[];for(let i=0;i<lines.length;i++){const p=lines[i].split(/[;,]/).map(s=>s.trim());if(i===0&&/data/i.test(p[0]))continue;const combo=valid(p.slice(2,8));if(combo)out.push({date:p[0],contest:p[1]||null,combo,jolly:p[8]?+p[8]:null,superstar:p[9]?+p[9]:null})}if(out.length){HISTORY=out;META={source:"import CSV",count:out.length};$("importInfo").textContent=`Importate ${out.length} estrazioni.`;renderAll()}};
+
+loadHistory();
+
+let refreshing=false;
+if("serviceWorker"in navigator)window.addEventListener("load",async()=>{try{const reg=await navigator.serviceWorker.register("./sw.js");if(reg.waiting)$("updateBar").classList.add("show");reg.addEventListener("updatefound",()=>{const nw=reg.installing;if(nw)nw.addEventListener("statechange",()=>{if(nw.state==="installed"&&navigator.serviceWorker.controller)$("updateBar").classList.add("show")})});$("updateNowBtn").onclick=()=>{if(reg.waiting)reg.waiting.postMessage({type:"SKIP_WAITING"});else location.reload()};navigator.serviceWorker.addEventListener("controllerchange",()=>{if(refreshing)return;refreshing=true;location.reload()});try{await reg.update()}catch(e){}}catch(e){}})
+</script>
+</body></html>
