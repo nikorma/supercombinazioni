@@ -1,10 +1,16 @@
-SuperCombinazioni PWA v6
+SuperCombinazioni PWA v7
 
-Correzione principale:
-- Generatore visibile subito all'apertura.
-- Grande pulsante "GENERA SUBITO UNA SESTINA" nella home.
-- Nuovo pulsante "Casuale automatica": genera 6 numeri diversi da 1 a 90 senza chiedere alcun parametro.
-- Resta disponibile "Genera con pari/dispari" per scegliere il profilo desiderato.
-- Rigenera e Pulisci restano disponibili.
+Novità:
+- aggiornamenti automatici migliorati
+- controllo nuova versione all'apertura
+- banner "Nuova versione disponibile"
+- pulsante "Aggiorna"
+- eliminazione automatica delle vecchie cache
+- badge v7 visibile nell'intestazione
+- home aggiornata più rapidamente da GitHub Pages
 
-Nota: se usi un vecchio URL pubblicato, devi caricare i file della v6 oppure svuotare la cache della PWA per vedere la nuova versione.
+Restano tutte le funzioni della v6, compreso:
+- GENERA SUBITO UNA SESTINA
+- Casuale automatica
+- Genera con pari/dispari
+- analisi e archivio

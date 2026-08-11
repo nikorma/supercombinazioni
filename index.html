@@ -18,7 +18,7 @@ body{margin:0;background:linear-gradient(180deg,#07150f,#0d2118 45%,#07150f);col
 header{padding:24px 18px 18px;max-width:920px;margin:auto}
 .logo{display:flex;align-items:center;gap:12px}
 .mark{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#0a2418;font-size:26px;font-weight:900}
-h1{margin:0;font-size:1.45rem}.tag{color:var(--muted);margin-top:5px;font-size:.92rem}
+h1{margin:0;font-size:1.45rem}.tag{color:var(--muted);margin-top:5px;font-size:.92rem}.version{display:inline-block;margin-left:8px;padding:3px 7px;border-radius:999px;background:#173b2b;color:#bff6d1;font-size:.72rem;font-weight:800;vertical-align:middle}
 main{max-width:920px;margin:auto;padding:0 14px 90px}
 .hero{background:linear-gradient(135deg,#173b2b,#10251c);border:1px solid #2f6148;border-radius:24px;padding:18px;margin-bottom:14px}
 .hero .big{font-size:2rem;font-weight:900;letter-spacing:-1px}
@@ -50,12 +50,12 @@ table{width:100%;border-collapse:collapse;font-size:.86rem}th,td{text-align:left
 #network{display:grid;gap:8px}.linkitem{padding:11px;border:1px solid #294838;border-radius:13px;background:#0b1c14}
 hr{border:0;border-top:1px solid var(--line);margin:14px 0}
 .note{font-size:.82rem;color:#8ea99a}
-@media(min-width:700px){.statgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+#updateBar{display:none;position:fixed;left:12px;right:12px;bottom:14px;z-index:99;background:#163326;border:1px solid #49d17d;border-radius:16px;padding:12px;box-shadow:0 12px 30px rgba(0,0,0,.35)}#updateBar.show{display:flex;align-items:center;justify-content:space-between;gap:10px}#updateBar .txt{font-weight:800}@media(min-width:700px){.statgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo"><div class="mark">6</div><div><h1>SuperCombinazioni</h1><div class="tag">Archivio, verifica e relazioni tra sestine</div></div></div>
+  <div class="logo"><div class="mark">6</div><div><h1>SuperCombinazioni <span class="version">v7</span></h1><div class="tag">Archivio, verifica e relazioni tra sestine</div></div></div>
 </header>
 <main>
   <section class="hero">
@@ -230,7 +230,8 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
   </section>
 </main>
 
-<script>
+<div id="updateBar"><div class="txt">Nuova versione disponibile</div><button id="updateNowBtn">Aggiorna</button></div><script>
+const APP_VERSION="7.0.0";
 const TOTAL=622614630;
 const demo=[
 {date:"2026-07-16",contest:"113",combo:[1,15,21,46,52,67]},
@@ -426,7 +427,34 @@ document.getElementById("resetBtn").onclick=()=>{if(confirm("Ripristinare i dati
 
 function renderAll(){renderArchive();renderDup();renderAnalysis();renderRelations()}
 renderAll();
-if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
+let refreshing=false;
+if("serviceWorker" in navigator){
+  window.addEventListener("load",async()=>{
+    try{
+      const reg=await navigator.serviceWorker.register("./sw.js");
+      if(reg.waiting) document.getElementById("updateBar").classList.add("show");
+      reg.addEventListener("updatefound",()=>{
+        const nw=reg.installing;
+        if(!nw) return;
+        nw.addEventListener("statechange",()=>{
+          if(nw.state==="installed" && navigator.serviceWorker.controller){
+            document.getElementById("updateBar").classList.add("show");
+          }
+        });
+      });
+      document.getElementById("updateNowBtn").onclick=()=>{
+        if(reg.waiting) reg.waiting.postMessage({type:"SKIP_WAITING"});
+        else location.reload();
+      };
+      navigator.serviceWorker.addEventListener("controllerchange",()=>{
+        if(refreshing) return;
+        refreshing=true;
+        location.reload();
+      });
+      try{ await reg.update(); }catch(e){}
+    }catch(e){}
+  });
+}
 </script>
 </body>
 </html>
