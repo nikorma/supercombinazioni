@@ -3,8 +3,8 @@
   "short_name": "SuperCombo",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#07150f",
-  "theme_color": "#0d3b2a",
+  "background_color": "#06150f",
+  "theme_color": "#062317",
   "icons": [
     {
       "src": "icon-192.png",
