@@ -40,7 +40,7 @@ jobs:
             python scripts/update_history.py
           fi
 
-            - name: Commit updated archive
+      - name: Commit updated archive
         shell: bash
         run: |
           git config user.name "SuperCombinazioni Bot"
@@ -48,28 +48,35 @@ jobs:
 
           cp history.json /tmp/history.json
 
+          git fetch origin main
+          git reset --hard origin/main
+
+          cp /tmp/history.json history.json
+          git add history.json
+
+          if git diff --cached --quiet; then
+            echo "Nessun aggiornamento"
+            exit 0
+          fi
+
+          git commit -m "Aggiorna archivio SuperEnalotto"
+
           for tentativo in 1 2 3; do
-            git fetch origin main
-            git reset --hard origin/main
-
-            cp /tmp/history.json history.json
-            git add history.json
-
-            if git diff --cached --quiet; then
-              echo "Nessun aggiornamento"
-              exit 0
-            fi
-
-            git commit -m "Aggiorna archivio SuperEnalotto"
-
             if git push origin HEAD:main; then
               echo "Archivio aggiornato correttamente"
               exit 0
             fi
 
-            echo "Repository cambiato durante il push. Nuovo tentativo..."
+            echo "Repository cambiato. Nuovo tentativo..."
+
+            cp history.json /tmp/history.json
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/history.json history.json
+            git add history.json
+            git commit -m "Aggiorna archivio SuperEnalotto"
+
             sleep 3
           done
 
-          echo "Impossibile aggiornare il repository dopo 3 tentativi"
           exit 1
