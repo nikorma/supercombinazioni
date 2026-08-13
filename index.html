@@ -36,17 +36,25 @@ details{border:1px solid var(--line);border-radius:15px;background:#0a1c13;margi
 .pill{display:inline-block;border-radius:999px;padding:4px 7px;background:#173b29;color:#c4f9d4;font-size:.72rem;font-weight:800}.yearline{display:flex;gap:6px;overflow:auto;padding-bottom:5px}.yearline button{white-space:nowrap}
 #updateBar{display:none;position:fixed;left:12px;right:12px;bottom:80px;z-index:40;border:1px solid var(--green);background:#153b28;border-radius:16px;padding:11px;align-items:center;justify-content:space-between;gap:10px}#updateBar.show{display:flex}
 @media(min-width:700px){.quick{grid-template-columns:repeat(4,1fr)}.stats{grid-template-columns:repeat(4,1fr)}.bottom{left:50%;transform:translateX(-50%);max-width:900px}}
+
+.ticket-panel{margin:12px 14px;background:#fffdf2;color:#133d25;border:3px solid #f0c400;border-radius:20px;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.28)}
+.ticket-head{background:linear-gradient(90deg,#0a8e3f,#11a34b);color:#fff;padding:12px 14px;font-weight:900;display:flex;justify-content:space-between;gap:12px}
+.ticket-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;padding:10px}
+.ticket-num{aspect-ratio:1;display:grid;place-items:center;border:1.5px solid #e26a6a;border-radius:7px;background:#fff;color:#333;font-weight:800;font-size:.78rem}
+.ticket-num.on{background:#079341;color:white;border-color:#079341}
+.prize-card{background:linear-gradient(135deg,#ffd83d,#efb900);color:#183a21;border-radius:16px;padding:14px;margin-top:12px}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
  <div class="brand"><div class="logo">6</div><div><h1>SuperCombinazioni</h1><p>Storico • verifica • analisi</p></div></div>
- <span class="badge">v11</span>
+ <span class="badge">v12</span>
 </header>
 
 <main>
 <section id="home" class="page active">
+<div class="ticket-panel"><div class="ticket-head"><span>Schedina digitale</span><span>6 numeri su 90</span></div><div class="ticket-grid" id="homeTicketGrid"></div></div>
  <div class="hero">
   <div class="kicker">SuperEnalotto</div>
   <h2>622.614.630 sestine</h2>
@@ -101,6 +109,7 @@ details{border:1px solid var(--line);border-radius:15px;background:#0a1c13;margi
 </section>
 
 <section id="generate" class="page">
+<div class="ticket-panel"><div class="ticket-head"><span>La tua schedina</span><span id="ticketLabel">Nessuna combinazione</span></div><div class="ticket-grid" id="genTicketGrid"></div></div>
  <div class="card">
   <h3>🎲 Generazione automatica</h3>
   <p class="muted">Crea 6 numeri casuali distinti da 1 a 90.</p>
@@ -129,6 +138,16 @@ details{border:1px solid var(--line);border-radius:15px;background:#0a1c13;margi
  <details>
   <summary>Quanto avrebbe preso nello storico?</summary>
   <div><button id="performanceBtn" class="btn gold">Calcola 2 / 3 / 4 / 5 / 5+1 / 6</button><div id="performanceResult" class="result muted">Usa la sestina inserita sopra.</div></div>
+ </details>
+ <details open>
+  <summary>🏆 Vincite storiche e importi</summary>
+  <div>
+   <button id="fullWinningsBtn" class="btn gold">Calcola tutte le vincite</button>
+   <div id="fullWinningsSummary" class="result muted">Inserisci la sestina e premi il pulsante.</div>
+   <div class="scroll" style="margin-top:10px;max-height:50vh">
+    <table><thead><tr><th>Data</th><th>Conc.</th><th>Esito</th><th>Quota</th></tr></thead><tbody id="fullWinningsBody"></tbody></table>
+   </div>
+  </div>
  </details>
  <details open>
   <summary>💶 Costi e rendimento</summary>
@@ -209,6 +228,27 @@ function balls(a){return `<div class="balls">${a.map(n=>`<span class="ball">${n}
 function pick(arr,n){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,n)}
 function randomCombo(){return pick(Array.from({length:90},(_,i)=>i+1),6).sort((a,b)=>a-b)}
 function parityCombo(e,o){e=+e;o=+o;if(e+o!==6)return null;const ev=[],od=[];for(let n=1;n<=90;n++)(n%2?od:ev).push(n);return [...pick(ev,e),...pick(od,o)].sort((a,b)=>a-b)}
+function renderTicket(id,selected=[]){
+ const el=$(id); if(!el) return;
+ const s=new Set(selected.map(Number));
+ el.innerHTML=Array.from({length:90},(_,i)=>{const n=i+1;return `<div class="ticket-num ${s.has(n)?"on":""}">${n}</div>`}).join("");
+}
+function outcomeFor(draw,combo){
+ const n=shared(combo,draw.combo);
+ if(n===6)return "6";
+ if(n===5){
+   if(draw.jolly && combo.includes(Number(draw.jolly)) && !draw.combo.includes(Number(draw.jolly))) return "5+1";
+   return "5";
+ }
+ if(n===4)return "4";
+ if(n===3)return "3";
+ if(n===2)return "2";
+ return null;
+}
+function prizeValue(draw,cat){
+ const p=(draw.prizes||{})[cat];
+ return p && (p.value===0 || p.value) ? Number(p.value) : null;
+}
 function formatCombo(a){const g=gaps(a),e=parity(a),matches=HISTORY.filter(x=>key(x.combo)===key(a));return `${balls(a)}<div class="stats"><div class="stat"><span>Pari / dispari</span><b>${e}/${6-e}</b></div><div class="stat"><span>Indice</span><b>${rank(a).toLocaleString("it-IT")}</b></div><div class="stat"><span>Distanza media</span><b>${g.avg.toFixed(1)}</b></div><div class="stat"><span>Già uscita</span><b>${matches.length?"Sì":"No"}</b></div></div><div class="muted" style="margin-top:9px">Distanze: ${g.items.join(" · ")} · ampiezza ${g.span}</div>`}
 
 
@@ -310,7 +350,7 @@ function renderLatestDraw(){
  $("latestJackpot").textContent=detail.next_jackpot?euro(detail.next_jackpot):"-";
  $("latestPrizeNote").textContent=pr && Object.keys(pr).length ? "Quote ufficiali dell'ultimo concorso caricato." : "Le quote saranno compilate dal prossimo aggiornamento automatico dell'archivio.";
 }
-function renderAll(){renderHome();renderLatestDraw();renderStats();renderYears();renderArchive()}
+function renderAll(){renderTicket("homeTicketGrid",[]);renderTicket("genTicketGrid",[]);renderHome();renderLatestDraw();renderStats();renderYears();renderArchive()}
 
 function renderHome(){
  $("homeDraws").textContent=HISTORY.length.toLocaleString("it-IT");
@@ -363,16 +403,41 @@ function renderArchive(){
 }
 $("archiveSearch").oninput=renderArchive;$("clearArchive").onclick=()=>{$("archiveSearch").value="";selectedYear="all";renderYears();renderArchive()};
 
-$("randomBtn").onclick=()=>{$("randomResult").className="result good";$("randomResult").innerHTML=formatCombo(randomCombo())};
+$("randomBtn").onclick=()=>{const a=randomCombo();$("randomResult").className="result good";$("randomResult").innerHTML=formatCombo(a);renderTicket("genTicketGrid",a);$("ticketLabel").textContent=a.join(" · ")};
 $("evenCount").onchange=()=>$("oddCount").value=String(6-+$("evenCount").value);
 $("oddCount").onchange=()=>$("evenCount").value=String(6-+$("oddCount").value);
-$("parityBtn").onclick=()=>{const a=parityCombo($("evenCount").value,$("oddCount").value);$("parityResult").className=a?"result good":"result bad";$("parityResult").innerHTML=a?formatCombo(a):"Pari + dispari deve essere 6."};
+$("parityBtn").onclick=()=>{const a=parityCombo($("evenCount").value,$("oddCount").value);$("parityResult").className=a?"result good":"result bad";$("parityResult").innerHTML=a?formatCombo(a):"Pari + dispari deve essere 6.";if(a){renderTicket("genTicketGrid",a);$("ticketLabel").textContent=a.join(" · ")}};
 $("clearGenerate").onclick=()=>{$("evenCount").value=3;$("oddCount").value=3;$("parityResult").className="result muted";$("parityResult").textContent="Scegli il rapporto desiderato."};
 
 $("checkBtn").onclick=()=>{const a=valid(vals("checkInputs"));if(!a){$("checkResult").className="result bad";$("checkResult").textContent="Sestina non valida.";return}const m=HISTORY.filter(x=>key(x.combo)===key(a));$("checkResult").className="result good";$("checkResult").innerHTML=`${balls(a)}<b>${m.length?`Uscita ${m.length} volta/e`:"Mai uscita nello storico caricato"}</b>${m.length?`<br><span class="muted">${m.map(x=>`${x.date}${x.contest?` · concorso ${x.contest}`:""}`).join("<br>")}</span>`:""}`};
 $("clearCheck").onclick=()=>{clearVals("checkInputs");$("checkResult").className="result muted";$("checkResult").textContent="Inserisci la sestina.";$("performanceResult").className="result muted";$("performanceResult").textContent="Usa la sestina inserita sopra."};
 $("performanceBtn").onclick=()=>{const a=valid(vals("checkInputs"));if(!a){$("performanceResult").textContent="Inserisci prima una sestina valida.";return}const c={2:0,3:0,4:0,5:0,6:0,"5+1":0};HISTORY.forEach(x=>{const n=shared(a,x.combo);if(c[n]!==undefined)c[n]++;if(n===5&&x.jolly&&a.includes(+x.jolly)&&!x.combo.includes(+x.jolly))c["5+1"]++});$("performanceResult").className="result good";$("performanceResult").innerHTML=`<div class="stats">${["6","5+1","5","4","3","2"].map(n=>`<div class="stat"><span>${n}</span><b>${c[n]}</b></div>`).join("")}</div>`};
 
+$("fullWinningsBtn").onclick=()=>{
+ const a=valid(vals("checkInputs"));
+ if(!a){$("fullWinningsSummary").className="result bad";$("fullWinningsSummary").textContent="Inserisci prima una sestina valida.";return}
+ const counts={"2":0,"3":0,"4":0,"5":0,"5+1":0,"6":0};
+ let total=0,known=0,wins=0;
+ const rows=[];
+ for(const d of HISTORY){
+   const cat=outcomeFor(d,a); if(!cat) continue;
+   counts[cat]++; wins++;
+   const val=prizeValue(d,cat);
+   if(val!==null){total+=val;known++}
+   rows.push({d,cat,val});
+ }
+ rows.sort((x,y)=>y.d.date.localeCompare(x.d.date));
+ $("fullWinningsBody").innerHTML=rows.length?rows.map(r=>`<tr><td>${r.d.date}</td><td>${r.d.contest??"-"}</td><td><b>${r.cat}</b></td><td>${r.val!==null?euro(r.val):"-"}</td></tr>`).join(""):`<tr><td colspan="4">Nessuna vincita.</td></tr>`;
+ const spent=HISTORY.length*baseCost()*combosCount();
+ $("fullWinningsSummary").className="result good";
+ $("fullWinningsSummary").innerHTML=`${balls(a)}<div class="stats">
+ <div class="stat"><span>Concorsi vincenti</span><b>${wins}</b></div>
+ <div class="stat"><span>Vincite note</span><b>${euro(total)}</b></div>
+ <div class="stat"><span>Spesa stimata</span><b>${euro(spent)}</b></div>
+ <div class="stat"><span>Saldo</span><b>${euro(total-spent)}</b></div>
+ </div><div class="result"><b>6:</b> ${counts["6"]} · <b>5+1:</b> ${counts["5+1"]} · <b>5:</b> ${counts["5"]} · <b>4:</b> ${counts["4"]} · <b>3:</b> ${counts["3"]} · <b>2:</b> ${counts["2"]}</div>
+ <div class="muted" style="margin-top:8px">Quote disponibili per ${known} concorsi vincenti su ${wins}.</div>`;
+};
 $("analysisBtn").onclick=()=>{const a=valid(vals("analysisInputs"));if(!a){$("analysisResult").textContent="Sestina non valida.";return}$("analysisResult").className="result good";$("analysisResult").innerHTML=formatCombo(a)};
 $("clearAnalysis").onclick=()=>{clearVals("analysisInputs");$("analysisResult").className="result muted";$("analysisResult").textContent="Inserisci una sestina."};
 

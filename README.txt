@@ -33,3 +33,8 @@ Nota: il calcolo della spesa usa il costo impostato dall'utente per tutti i conc
 - auto-avanzamento tra caselle numeriche: immediato con 2 cifre, breve ritardo con 1 cifra
 - Home con ultima estrazione, quote vincita 2/3/4/5/5+1/6, montepremi e jackpot
 - aggiornamento storico arricchito con premi ufficiali delle pagine dettaglio
+
+- grafica schedina verde/gialla con griglia 1-90
+- storico vincite completo con categorie 2,3,4,5,5+1,6
+- quota per concorso quando disponibile
+- totale vincite, spesa stimata e saldo
