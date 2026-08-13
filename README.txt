@@ -1,4 +1,4 @@
-SUPERCOMBINAZIONI PWA v9
+SUPERCOMBINAZIONI PWA v11
 
 Novità:
 - layout completamente nuovo e più pulito
@@ -20,3 +20,16 @@ PRIMA PUBBLICAZIONE
 6. GitHub Pages si aggiornerà con lo storico.
 
 La sorgente ufficiale superenalotto.it viene preferita. Quando un anno non è esposto nelle pagine mensili ufficiali, lo script usa l'archivio annuale indipendente national-lottery.com come fallback.
+
+- nuova sezione Costi e rendimento
+- costo per combinazione modificabile (default 1 euro)
+- numero combinazioni per concorso
+- spesa su tutto lo storico
+- calcolo personalizzato per un numero qualsiasi di concorsi
+- riepilogo costi nella Home
+
+Nota: il calcolo della spesa usa il costo impostato dall'utente per tutti i concorsi e non ricostruisce automaticamente eventuali variazioni storiche del prezzo.
+
+- auto-avanzamento tra caselle numeriche: immediato con 2 cifre, breve ritardo con 1 cifra
+- Home con ultima estrazione, quote vincita 2/3/4/5/5+1/6, montepremi e jackpot
+- aggiornamento storico arricchito con premi ufficiali delle pagine dettaglio
