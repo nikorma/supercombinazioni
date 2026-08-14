@@ -1,4 +1,4 @@
-SUPERCOMBINAZIONI PWA v11
+SUPERCOMBINAZIONI PWA v13
 
 Novità:
 - layout completamente nuovo e più pulito
@@ -38,3 +38,5 @@ Nota: il calcolo della spesa usa il costo impostato dall'utente per tutti i conc
 - storico vincite completo con categorie 2,3,4,5,5+1,6
 - quota per concorso quando disponibile
 - totale vincite, spesa stimata e saldo
+
+- SuperStar completo e Caccia alla sestina storica

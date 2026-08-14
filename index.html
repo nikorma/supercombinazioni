@@ -43,13 +43,17 @@ details{border:1px solid var(--line);border-radius:15px;background:#0a1c13;margi
 .ticket-num{aspect-ratio:1;display:grid;place-items:center;border:1.5px solid #e26a6a;border-radius:7px;background:#fff;color:#333;font-weight:800;font-size:.78rem}
 .ticket-num.on{background:#079341;color:white;border-color:#079341}
 .prize-card{background:linear-gradient(135deg,#ffd83d,#efb900);color:#183a21;border-radius:16px;padding:14px;margin-top:12px}
+
+.starbox{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.starball{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#ffd633;color:#574400;font-weight:950;border:2px solid #e0b700}
+.hunt-progress{height:10px;background:#163725;border-radius:999px;overflow:hidden;margin:10px 0}.hunt-progress>div{height:100%;width:0;background:linear-gradient(90deg,#4fe184,#d2ff72)}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
  <div class="brand"><div class="logo">6</div><div><h1>SuperCombinazioni</h1><p>Storico • verifica • analisi</p></div></div>
- <span class="badge">v12</span>
+ <span class="badge">v13</span>
 </header>
 
 <main>
@@ -125,6 +129,19 @@ details{border:1px solid var(--line);border-radius:15px;background:#0a1c13;margi
   <div class="row" style="margin-top:10px"><button id="parityBtn" class="btn">Genera</button><button id="clearGenerate" class="btn secondary">Pulisci</button></div>
   <div id="parityResult" class="result muted">Scegli il rapporto desiderato.</div>
  </div>
+ <div class="card">
+  <h3>⭐ SuperStar</h3>
+  <p class="muted">Scegli un numero da 1 a 90 oppure generalo casualmente.</p>
+  <div class="row"><input id="superstarInput" type="number" min="1" max="90" inputmode="numeric" placeholder="1-90" style="width:110px"><button id="randomStarBtn" class="btn gold">Casuale</button><button id="clearStarBtn" class="btn secondary">Pulisci</button></div>
+  <div id="starResult" class="result muted">Nessun SuperStar selezionato.</div>
+ </div>
+ <div class="card">
+  <h3>🎯 Caccia alla sestina storica</h3>
+  <p class="muted">Genera combinazioni casuali finché trova una sestina già estratta nello storico.</p>
+  <div class="row"><button id="huntBtn" class="btn gold">Avvia</button><button id="stopHuntBtn" class="btn secondary">Ferma</button></div>
+  <div class="hunt-progress"><div id="huntBar"></div></div>
+  <div id="huntResult" class="result muted">Pronto.</div>
+ </div>
 </section>
 
 <section id="check" class="page">
@@ -138,6 +155,10 @@ details{border:1px solid var(--line);border-radius:15px;background:#0a1c13;margi
  <details>
   <summary>Quanto avrebbe preso nello storico?</summary>
   <div><button id="performanceBtn" class="btn gold">Calcola 2 / 3 / 4 / 5 / 5+1 / 6</button><div id="performanceResult" class="result muted">Usa la sestina inserita sopra.</div></div>
+ </details>
+ <details>
+  <summary>⭐ SuperStar giocato</summary>
+  <div><p class="muted">Se avresti giocato anche SuperStar, inseriscilo qui.</p><div class="row"><input id="verifyStarInput" type="number" min="1" max="90" inputmode="numeric" placeholder="1-90" style="width:120px"><button id="copyStarBtn" class="btn secondary">Usa quello generato</button></div></div>
  </details>
  <details open>
   <summary>🏆 Vincite storiche e importi</summary>
@@ -171,6 +192,11 @@ details{border:1px solid var(--line);border-radius:15px;background:#0a1c13;margi
 </section>
 
 <section id="stats" class="page">
+ <div class="card">
+  <h3>⭐ Categorie SuperStar</h3>
+  <div class="stats"><div class="stat"><span>6 Stella</span><b>+2 M€</b></div><div class="stat"><span>5+1 Stella</span><b>+1 M€</b></div><div class="stat"><span>5 Stella</span><b>×25</b></div><div class="stat"><span>4 Stella</span><b>×100</b></div><div class="stat"><span>3 Stella</span><b>×100</b></div><div class="stat"><span>2 Stella</span><b>100 €</b></div><div class="stat"><span>1 Stella</span><b>10 €</b></div><div class="stat"><span>0 Stella</span><b>5 €</b></div></div>
+  <p class="muted" style="margin-top:8px">SuperStar costa 0,50 € in più per combinazione. WinBox dipende dalla singola ricevuta e non è ricostruibile dal solo archivio estrazioni.</p>
+ </div>
  <div class="card">
   <h3>📊 Statistiche storiche</h3>
   <div class="stats">
@@ -248,6 +274,35 @@ function outcomeFor(draw,combo){
 function prizeValue(draw,cat){
  const p=(draw.prizes||{})[cat];
  return p && (p.value===0 || p.value) ? Number(p.value) : null;
+}
+let GENERATED_STAR=null,HUNT_RUNNING=false;
+function validStar(v){const n=Number(v);return Number.isInteger(n)&&n>=1&&n<=90?n:null}
+function randomStar(){return Math.floor(Math.random()*90)+1}
+function starCategory(draw,combo,star){
+ if(!star||!draw.superstar||Number(draw.superstar)!==Number(star))return null;
+ const n=shared(combo,draw.combo);
+ if(n===6)return "6 Stella";
+ if(n===5){if(draw.jolly&&combo.includes(Number(draw.jolly))&&!draw.combo.includes(Number(draw.jolly)))return "5+1 Stella";return "5 Stella"}
+ return `${n} Stella`;
+}
+function starBonus(draw,cat){
+ if(!cat)return 0;
+ if(cat==="6 Stella")return 2000000;if(cat==="5+1 Stella")return 1000000;
+ if(cat==="2 Stella")return 100;if(cat==="1 Stella")return 10;if(cat==="0 Stella")return 5;
+ if(cat==="5 Stella"){const v=prizeValue(draw,"5");return v===null?null:v*25}
+ if(cat==="4 Stella"){const v=prizeValue(draw,"4");return v===null?null:v*100}
+ if(cat==="3 Stella"){const v=prizeValue(draw,"3");return v===null?null:v*100}
+ return null;
+}
+async function huntHistorical(){
+ if(!HISTORY.length){$("huntResult").textContent="Archivio non disponibile.";return}
+ HUNT_RUNNING=true;const map=new Map();HISTORY.forEach(d=>{const k=key(d.combo);if(!map.has(k))map.set(k,[]);map.get(k).push(d)});
+ let tries=0,start=performance.now();$("huntResult").textContent="Ricerca in corso…";
+ while(HUNT_RUNNING){
+  for(let i=0;i<4000;i++){tries++;const a=randomCombo(),hit=map.get(key(a));if(hit){HUNT_RUNNING=false;$("huntBar").style.width="100%";$("huntResult").className="result good";$("huntResult").innerHTML=`${balls(a)}<div class="stats"><div class="stat"><span>Tentativi</span><b>${tries.toLocaleString("it-IT")}</b></div><div class="stat"><span>N. sestina</span><b>${rank(a).toLocaleString("it-IT")}</b></div><div class="stat"><span>Tempo</span><b>${((performance.now()-start)/1000).toFixed(2)} s</b></div><div class="stat"><span>Uscite</span><b>${hit.length}</b></div></div><div class="muted">${hit.map(d=>`${d.date}${d.contest?` · concorso ${d.contest}`:""}`).join("<br>")}</div>`;renderTicket("genTicketGrid",a);$("ticketLabel").textContent=a.join(" · ");return}}
+  $("huntBar").style.width=Math.min(95,5+Math.log10(tries+10)*18)+"%";$("huntResult").textContent=`Ricerca in corso… ${tries.toLocaleString("it-IT")} tentativi`;await new Promise(r=>setTimeout(r,0))
+ }
+ $("huntResult").textContent=`Fermata dopo ${tries.toLocaleString("it-IT")} tentativi.`;
 }
 function formatCombo(a){const g=gaps(a),e=parity(a),matches=HISTORY.filter(x=>key(x.combo)===key(a));return `${balls(a)}<div class="stats"><div class="stat"><span>Pari / dispari</span><b>${e}/${6-e}</b></div><div class="stat"><span>Indice</span><b>${rank(a).toLocaleString("it-IT")}</b></div><div class="stat"><span>Distanza media</span><b>${g.avg.toFixed(1)}</b></div><div class="stat"><span>Già uscita</span><b>${matches.length?"Sì":"No"}</b></div></div><div class="muted" style="margin-top:9px">Distanze: ${g.items.join(" · ")} · ampiezza ${g.span}</div>`}
 
@@ -409,34 +464,30 @@ $("oddCount").onchange=()=>$("evenCount").value=String(6-+$("oddCount").value);
 $("parityBtn").onclick=()=>{const a=parityCombo($("evenCount").value,$("oddCount").value);$("parityResult").className=a?"result good":"result bad";$("parityResult").innerHTML=a?formatCombo(a):"Pari + dispari deve essere 6.";if(a){renderTicket("genTicketGrid",a);$("ticketLabel").textContent=a.join(" · ")}};
 $("clearGenerate").onclick=()=>{$("evenCount").value=3;$("oddCount").value=3;$("parityResult").className="result muted";$("parityResult").textContent="Scegli il rapporto desiderato."};
 
+$("randomStarBtn").onclick=()=>{GENERATED_STAR=randomStar();$("superstarInput").value=GENERATED_STAR;$("starResult").className="result good";$("starResult").innerHTML=`<div class="starbox"><div class="starball">${GENERATED_STAR}</div><b>SuperStar</b></div>`};
+$("superstarInput").oninput=()=>{GENERATED_STAR=validStar($("superstarInput").value);$("starResult").innerHTML=GENERATED_STAR?`<div class="starbox"><div class="starball">${GENERATED_STAR}</div><b>SuperStar</b></div>`:"Nessun SuperStar selezionato."};
+$("clearStarBtn").onclick=()=>{GENERATED_STAR=null;$("superstarInput").value="";$("starResult").textContent="Nessun SuperStar selezionato."};
+$("copyStarBtn").onclick=()=>{if(GENERATED_STAR)$("verifyStarInput").value=GENERATED_STAR};
+$("huntBtn").onclick=()=>{if(!HUNT_RUNNING)huntHistorical()};$("stopHuntBtn").onclick=()=>{HUNT_RUNNING=false};
 $("checkBtn").onclick=()=>{const a=valid(vals("checkInputs"));if(!a){$("checkResult").className="result bad";$("checkResult").textContent="Sestina non valida.";return}const m=HISTORY.filter(x=>key(x.combo)===key(a));$("checkResult").className="result good";$("checkResult").innerHTML=`${balls(a)}<b>${m.length?`Uscita ${m.length} volta/e`:"Mai uscita nello storico caricato"}</b>${m.length?`<br><span class="muted">${m.map(x=>`${x.date}${x.contest?` · concorso ${x.contest}`:""}`).join("<br>")}</span>`:""}`};
 $("clearCheck").onclick=()=>{clearVals("checkInputs");$("checkResult").className="result muted";$("checkResult").textContent="Inserisci la sestina.";$("performanceResult").className="result muted";$("performanceResult").textContent="Usa la sestina inserita sopra."};
 $("performanceBtn").onclick=()=>{const a=valid(vals("checkInputs"));if(!a){$("performanceResult").textContent="Inserisci prima una sestina valida.";return}const c={2:0,3:0,4:0,5:0,6:0,"5+1":0};HISTORY.forEach(x=>{const n=shared(a,x.combo);if(c[n]!==undefined)c[n]++;if(n===5&&x.jolly&&a.includes(+x.jolly)&&!x.combo.includes(+x.jolly))c["5+1"]++});$("performanceResult").className="result good";$("performanceResult").innerHTML=`<div class="stats">${["6","5+1","5","4","3","2"].map(n=>`<div class="stat"><span>${n}</span><b>${c[n]}</b></div>`).join("")}</div>`};
 
 $("fullWinningsBtn").onclick=()=>{
- const a=valid(vals("checkInputs"));
- if(!a){$("fullWinningsSummary").className="result bad";$("fullWinningsSummary").textContent="Inserisci prima una sestina valida.";return}
- const counts={"2":0,"3":0,"4":0,"5":0,"5+1":0,"6":0};
- let total=0,known=0,wins=0;
- const rows=[];
+ const a=valid(vals("checkInputs"));if(!a){$("fullWinningsSummary").className="result bad";$("fullWinningsSummary").textContent="Inserisci prima una sestina valida.";return}
+ const star=validStar($("verifyStarInput").value),counts={"2":0,"3":0,"4":0,"5":0,"5+1":0,"6":0},starCounts={};
+ let total=0,starTotal=0,wins=0,known=0;const rows=[];
  for(const d of HISTORY){
-   const cat=outcomeFor(d,a); if(!cat) continue;
-   counts[cat]++; wins++;
-   const val=prizeValue(d,cat);
-   if(val!==null){total+=val;known++}
-   rows.push({d,cat,val});
+  const cat=outcomeFor(d,a),sc=starCategory(d,a,star);if(!cat&&!sc)continue;
+  let val=0,baseKnown=false,sb=0;
+  if(cat){counts[cat]++;wins++;const v=prizeValue(d,cat);if(v!==null){val=v;total+=v;known++;baseKnown=true}}
+  if(sc){starCounts[sc]=(starCounts[sc]||0)+1;const b=starBonus(d,sc);if(b!==null){sb=b;starTotal+=b}}
+  rows.push({d,cat,sc,val:baseKnown?val:null,sb});
  }
  rows.sort((x,y)=>y.d.date.localeCompare(x.d.date));
- $("fullWinningsBody").innerHTML=rows.length?rows.map(r=>`<tr><td>${r.d.date}</td><td>${r.d.contest??"-"}</td><td><b>${r.cat}</b></td><td>${r.val!==null?euro(r.val):"-"}</td></tr>`).join(""):`<tr><td colspan="4">Nessuna vincita.</td></tr>`;
- const spent=HISTORY.length*baseCost()*combosCount();
- $("fullWinningsSummary").className="result good";
- $("fullWinningsSummary").innerHTML=`${balls(a)}<div class="stats">
- <div class="stat"><span>Concorsi vincenti</span><b>${wins}</b></div>
- <div class="stat"><span>Vincite note</span><b>${euro(total)}</b></div>
- <div class="stat"><span>Spesa stimata</span><b>${euro(spent)}</b></div>
- <div class="stat"><span>Saldo</span><b>${euro(total-spent)}</b></div>
- </div><div class="result"><b>6:</b> ${counts["6"]} · <b>5+1:</b> ${counts["5+1"]} · <b>5:</b> ${counts["5"]} · <b>4:</b> ${counts["4"]} · <b>3:</b> ${counts["3"]} · <b>2:</b> ${counts["2"]}</div>
- <div class="muted" style="margin-top:8px">Quote disponibili per ${known} concorsi vincenti su ${wins}.</div>`;
+ $("fullWinningsBody").innerHTML=rows.length?rows.map(r=>`<tr><td>${r.d.date}</td><td>${r.d.contest??"-"}</td><td><b>${[r.cat,r.sc].filter(Boolean).join(" + ")}</b></td><td>${euro((r.val||0)+(r.sb||0))}</td></tr>`).join(""):`<tr><td colspan="4">Nessuna vincita.</td></tr>`;
+ const unit=baseCost()+(star?0.50:0),spent=HISTORY.length*unit*combosCount(),grand=total+starTotal;
+ $("fullWinningsSummary").className="result good";$("fullWinningsSummary").innerHTML=`${balls(a)}${star?`<div class="starbox"><div class="starball">${star}</div><b>SuperStar giocato</b></div>`:""}<div class="stats"><div class="stat"><span>Vincite base note</span><b>${euro(total)}</b></div><div class="stat"><span>Bonus Stella</span><b>${euro(starTotal)}</b></div><div class="stat"><span>Spesa</span><b>${euro(spent)}</b></div><div class="stat"><span>Saldo</span><b>${euro(grand-spent)}</b></div></div><div class="result"><b>6:</b> ${counts["6"]} · <b>5+1:</b> ${counts["5+1"]} · <b>5:</b> ${counts["5"]} · <b>4:</b> ${counts["4"]} · <b>3:</b> ${counts["3"]} · <b>2:</b> ${counts["2"]}</div>${star?`<div class="result"><b>Stella:</b> ${Object.entries(starCounts).map(([k,v])=>`${k}: ${v}`).join(" · ")||"nessuna"}</div>`:""}<div class="muted" style="margin-top:8px">Costo unitario usato: ${euro(unit)}. Quote base disponibili per ${known} concorsi vincenti.</div>`;
 };
 $("analysisBtn").onclick=()=>{const a=valid(vals("analysisInputs"));if(!a){$("analysisResult").textContent="Sestina non valida.";return}$("analysisResult").className="result good";$("analysisResult").innerHTML=formatCombo(a)};
 $("clearAnalysis").onclick=()=>{clearVals("analysisInputs");$("analysisResult").className="result muted";$("analysisResult").textContent="Inserisci una sestina."};
